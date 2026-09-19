@@ -1,6 +1,6 @@
-// V1 — Field Notebook (Roboto Light · B/W + fluorescent yellow-green accent)
+// V1 — Field Notebook (Roboto Light · pure black & white)
 
-const FN_ACCENT = '#c6ff00'; // fluorescent yellow-green
+const FN_ACCENT = '#0a0a0a'; // accent collapsed to ink—no more fluorescent yellow-green
 const FN_INK = '#0a0a0a';
 const FN_PAPER = '#ffffff';
 const FN_RULE = 'rgba(10,10,10,0.14)';
@@ -33,7 +33,6 @@ function FNRow({ p, idx, open, onToggle, density, sans, mono }) {
       borderTop: `1px solid ${FN_RULE}`,
       padding: `${padY}px 0`,
       position: 'relative',
-      background: open ? `linear-gradient(to bottom, ${FN_ACCENT}14, transparent 120px)` : 'transparent',
       transition: 'background .35s ease',
     }}>
       <button onClick={onToggle} style={{
@@ -51,14 +50,9 @@ function FNRow({ p, idx, open, onToggle, density, sans, mono }) {
         }}>
           <span style={{
             position: 'relative',
-            backgroundImage: open
-              ? `linear-gradient(${FN_ACCENT}, ${FN_ACCENT})`
-              : 'none',
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: open ? '100% 42%' : '0% 42%',
-            backgroundPosition: '0 78%',
-            transition: 'background-size .4s ease',
-            padding: '0 2px',
+            borderBottom: open ? `1px solid ${FN_INK}` : '1px solid transparent',
+            transition: 'border-color .3s ease',
+            padding: '0 1px',
           }}>{p.title}</span>
           <span style={{ color: FN_MUTED, fontSize: '0.6em', marginLeft: 10, fontWeight: 300 }}>
             {p.year}
@@ -111,10 +105,10 @@ function FNRow({ p, idx, open, onToggle, density, sans, mono }) {
                 fontFamily: mono, fontSize: 11, fontWeight: 400, letterSpacing: 1.2,
                 textTransform: 'uppercase', color: FN_INK, textDecoration: 'none',
                 padding: '9px 14px', border: `1px solid ${FN_INK}`, background: '#fff',
-                transition: 'background .2s ease',
+                transition: 'background .2s ease, color .2s ease',
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = FN_ACCENT; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = '#fff'; }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = FN_INK; e.currentTarget.style.color = '#fff'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = FN_INK; }}
               >
                 Open page <span aria-hidden style={{ fontSize: 13 }}>→</span>
               </a>
@@ -141,7 +135,6 @@ function FNFigure({ caption, mono }) {
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#fnhatch)" />
-          <rect x="0" y="0" width="4" height="4" fill={FN_ACCENT} />
         </svg>
         <div style={{
           position: 'absolute', inset: 10, border: `1px dashed ${FN_RULE}`,
@@ -149,14 +142,14 @@ function FNFigure({ caption, mono }) {
           fontFamily: mono, fontSize: 10, fontWeight: 400,
           color: FN_MUTED, letterSpacing: 0.8, textTransform: 'uppercase',
         }}>
-          fig. plate
+          image
         </div>
       </div>
       <figcaption style={{
         fontFamily: mono, fontSize: 10.5, color: FN_MUTED, marginTop: 8,
         letterSpacing: 0.4, fontWeight: 400,
       }}>
-        fig. — {caption}
+        {caption}
       </figcaption>
     </figure>
   );
@@ -175,9 +168,9 @@ function FieldNotebook({ data, density = 'tight', pair = 'sans-mono' }) {
 
   // All Roboto — sans (light) dominant, mono for meta.
   const pairs = {
-    'sans-mono':  { sans: 'Roboto, system-ui, sans-serif',            mono: '"Roboto Mono", ui-monospace, monospace' },
-    'serif-mono': { sans: '"Roboto Serif", Roboto, serif',            mono: '"Roboto Mono", ui-monospace, monospace' },
-    'serif-sans': { sans: '"Roboto Serif", Roboto, serif',            mono: 'Roboto, system-ui, sans-serif' },
+    'sans-mono':  { sans: 'Roboto, system-ui, sans-serif',            mono: 'Roboto, system-ui, sans-serif' },
+    'serif-mono': { sans: 'Roboto, system-ui, sans-serif',            mono: 'Roboto, system-ui, sans-serif' },
+    'serif-sans': { sans: 'Roboto, system-ui, sans-serif',            mono: 'Roboto, system-ui, sans-serif' },
   };
   const { sans, mono } = pairs[pair] || pairs['sans-mono'];
 
@@ -219,8 +212,8 @@ function FieldNotebook({ data, density = 'tight', pair = 'sans-mono' }) {
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
           <div style={{
-            fontFamily: sans, fontSize: 'min(52vw, 900px)', color: FN_ACCENT,
-            opacity: 0.5, mixBlendMode: 'multiply',
+            fontFamily: sans, fontSize: 'min(52vw, 900px)', color: FN_INK,
+            opacity: 0.06,
             fontWeight: 300, lineHeight: 1,
           }}>王瑶</div>
         </div>
@@ -293,10 +286,10 @@ function FieldNotebook({ data, density = 'tight', pair = 'sans-mono' }) {
         <div>
           <div style={{ textTransform: 'uppercase', letterSpacing: 1, fontSize: 10, marginBottom: 8 }}>Contact</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-            <a href="mailto:yolanda_wang@gsd.harvard.edu" style={{ fontFamily: sans, fontSize: 14, fontWeight: 300, color: FN_INK, textDecoration: 'none', backgroundImage: `linear-gradient(${FN_ACCENT}, ${FN_ACCENT})`, backgroundRepeat: 'no-repeat', backgroundSize: '100% 18%', backgroundPosition: '0 92%', padding: '0 2px', width: 'fit-content' }}>
+            <a href="mailto:yolanda_wang@gsd.harvard.edu" style={{ fontFamily: sans, fontSize: 14, fontWeight: 300, color: FN_INK, textDecoration: 'underline', textUnderlineOffset: 3, textDecorationThickness: '1px', width: 'fit-content' }}>
               yolanda_wang@gsd.harvard.edu
             </a>
-            <a href={data.linkedin} style={{ fontFamily: sans, fontSize: 14, fontWeight: 300, color: FN_INK, textDecoration: 'none', backgroundImage: `linear-gradient(${FN_ACCENT}, ${FN_ACCENT})`, backgroundRepeat: 'no-repeat', backgroundSize: '100% 18%', backgroundPosition: '0 92%', padding: '0 2px', width: 'fit-content' }}>
+            <a href={data.linkedin} style={{ fontFamily: sans, fontSize: 14, fontWeight: 300, color: FN_INK, textDecoration: 'underline', textUnderlineOffset: 3, textDecorationThickness: '1px', width: 'fit-content' }}>
               linkedin.com/in/yao-wang-gsd
             </a>
           </div>
