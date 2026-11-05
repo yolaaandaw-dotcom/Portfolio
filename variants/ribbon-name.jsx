@@ -1,6 +1,6 @@
 // The name, bent from one continuous line. Pull the loose end and the form comes
 // undone into a straight thread, last part first. Let go after a real pull and the
-// thread winds itself into the next form (Yao Wang, then 王瑶, then back); after a small
+// thread winds itself into the next form (Yao Wang, 王瑶, a flower, then back); after a small
 // tug it goes back to the same one. One part of the form settles late.
 //
 // Each form is a list of parts, each part a run of corners [x, y, r] in pen order.
@@ -32,6 +32,16 @@ const RN_FORMS = [
       // 瑶, right side below
       [[163, 52, 0], [151, 63, 0], [155, 59, 0], [188, 59, 0], [170, 59, 0], [170, 73, 0], [144, 73, 0], [196, 73, 0], [170, 73, 0], [170, 100, 0],
         [152, 100, 0], [152, 84, 0], [152, 100, 0], [188, 100, 0], [188, 84, 0], [188, 100, 0], [212, 100, 0]],
+    ],
+  },
+  {
+    // a small flower with a line running back and forth on either side of it
+    label: 'A small flower',
+    parts: [
+      [[0, 100, 0], [0, 22, 6.5], [13, 22, 6.5], [13, 100, 6.5], [26, 100, 6.5], [26, 22, 6.5], [39, 22, 6.5], [39, 100, 6.5], [52, 100, 6.5], [52, 22, 6.5], [65, 22, 6.5], [65, 75.2, 4]],
+      [[115.4, 58.8, 0], [81, 65.1, 12], [94.6, 23.3, 12], [118.7, 48.7, 0], [102, 17.9, 12], [146, 17.9, 12], [129.3, 48.7, 0]],
+      [[153.4, 23.3, 12], [167, 65.1, 12], [132.6, 58.8, 0], [164.2, 73.9, 12], [128.6, 99.8, 12], [124, 65, 0], [119.4, 99.8, 12], [83.8, 73.9, 12], [115.4, 58.8, 0], [132.6, 58.8, 0]],
+      [[183, 75.2, 4], [183, 100, 6.5], [196, 100, 6.5], [196, 22, 6.5], [209, 22, 6.5], [209, 100, 6.5], [222, 100, 6.5], [222, 22, 6.5], [235, 22, 6.5], [235, 100, 6.5], [248, 100, 6.5], [248, 22, 6.5], [261, 22, 6.5], [261, 100, 0]],
     ],
   },
 ];
