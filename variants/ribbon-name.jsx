@@ -7,6 +7,11 @@
 // The line runs straight from corner to corner and bends with radius r; 0 is a sharp fold.
 // Baseline at y = 100, x-height at 50, cap height at 10. Parts continue from one another,
 // and what stands on the baseline is joined by it.
+//
+// fine: the form has short strokes that double back a lot. Wound in like the letters it
+// shakes, so it moves differently: the loose end glides straight home instead of following
+// every stroke, what has formed stays put, no part settles late, and on release the form
+// is pulled flat in one motion instead of coming undone stroke by stroke.
 const RN_FORMS = [
   {
     label: 'Yao Wang',
@@ -22,6 +27,7 @@ const RN_FORMS = [
   },
   {
     label: '王瑶',
+    fine: true,
     parts: [
       // 王
       [[8, 14, 0], [72, 14, 0], [40, 14, 0], [40, 55, 0], [14, 55, 0], [66, 55, 0], [40, 55, 0], [40, 100, 0], [0, 100, 0], [80, 100, 0]],
@@ -37,6 +43,7 @@ const RN_FORMS = [
   {
     // a small flower with a line running back and forth on either side of it
     label: 'A small flower',
+    fine: true,
     parts: [
       [[0, 100, 0], [0, 22, 6.5], [13, 22, 6.5], [13, 100, 6.5], [26, 100, 6.5], [26, 22, 6.5], [39, 22, 6.5], [39, 100, 6.5], [52, 100, 6.5], [52, 22, 6.5], [65, 22, 6.5], [65, 75.2, 4]],
       [[115.4, 58.8, 0], [81, 65.1, 12], [94.6, 23.3, 12], [118.7, 48.7, 0], [102, 17.9, 12], [146, 17.9, 12], [129.3, 48.7, 0]],
@@ -53,6 +60,8 @@ const RN_REEL = 300;          // px of thread wound in per second
 const RN_UNDO = 1500;         // px per second at which the rest of a form lets go before the next one winds
 const RN_NEXT = 60;           // px of thread that has to be out for a release to move on to the next form
 const RN_FOLLOW = 20;         // how fast the line follows, per second
+const RN_CRISP = 70;          // the same for formed strokes of a fine form
+const RN_FLAT = 0.3;          // seconds a fine form takes to be pulled flat
 const RN_LAG = 2.4;           // the same for the part that settles late
 const RN_LATE = 0.45;         // seconds the late part keeps lagging after the rest is home
 const RN_DOT = '#ffc400';     // the pull tab at the loose end
@@ -118,6 +127,7 @@ function RibbonName({ ink = '#0a0a0a' }) {
     let end = rest[n - 1].slice();  // where the loose end is held
     let stretch = 1;                // straight thread drawn per unit of line still to wind in
     let grab = [0, 0], late = null, lateFor = 0, frame = 0, last = 0, opening = 0;
+    let fine = false, held = end.slice(), front0 = 0, flatFrom = null, flatT = 0;
 
     const restAt = (l) => {
       let lo = 0, hi = n - 1;
@@ -150,6 +160,7 @@ function RibbonName({ ink = '#0a0a0a' }) {
       form = i;
       ({ rest, arc, ends } = ribbonLine(RN_FORMS[form].parts));
       n = rest.length; L = arc[n - 1];
+      fine = !!RN_FORMS[form].fine;
       svg.current.setAttribute('aria-label', RN_FORMS[form].label);
     };
 
@@ -158,7 +169,8 @@ function RibbonName({ ink = '#0a0a0a' }) {
       const from = restAt(front);
       stretch = L - front > 1 ? Math.hypot(end[0] - from[0], end[1] - from[1]) / (L - front) : 1;
       const undone = ends.map((e, k) => [k ? ends[k - 1] : 0, e]).filter(([a]) => a >= front - 1);
-      late = undone.length ? undone[Math.floor(Math.random() * undone.length)] : null;
+      late = undone.length && !fine ? undone[Math.floor(Math.random() * undone.length)] : null;
+      held = end.slice(); front0 = front;
       lateFor = RN_LATE;
       mode = 'reel';
       wake();
@@ -176,6 +188,19 @@ function RibbonName({ ink = '#0a0a0a' }) {
     const step = (now) => {
       const dt = Math.min(0.05, (now - last) / 1000 || 0.016);
       last = now;
+      if (mode === 'flat') {
+        // every point goes straight to its place on the thread, so the form flattens without spikes
+        flatT = Math.min(1, flatT + dt / RN_FLAT);
+        const e = 1 - Math.pow(1 - flatT, 3);
+        for (let i = 0; i < n; i++) {
+          const tx = rest[0][0] + ((end[0] - rest[0][0]) * arc[i]) / L, ty = rest[0][1] + ((end[1] - rest[0][1]) * arc[i]) / L;
+          pos[i][0] = flatFrom[i][0] + (tx - flatFrom[i][0]) * e; pos[i][1] = flatFrom[i][1] + (ty - flatFrom[i][1]) * e;
+        }
+        if (flatT === 1) next();
+        draw();
+        frame = requestAnimationFrame(step);
+        return;
+      }
       const base = restAt(front);
       let ux = end[0] - base[0], uy = end[1] - base[1];
       const ul = Math.hypot(ux, uy) || 1;
@@ -187,7 +212,10 @@ function RibbonName({ ink = '#0a0a0a' }) {
         front = Math.max(0, front - RN_UNDO * dt);
       } else if (mode === 'reel') {
         front = Math.min(L, front + RN_REEL * dt);
-        end = [base[0] + ux * (L - front) * stretch, base[1] + uy * (L - front) * stretch];
+        if (fine) {
+          const p = L - front0 > 1 ? (front - front0) / (L - front0) : 1, e = p * p * (3 - 2 * p);
+          end = [held[0] + (rest[n - 1][0] - held[0]) * e, held[1] + (rest[n - 1][1] - held[1]) * e];
+        } else end = [base[0] + ux * (L - front) * stretch, base[1] + uy * (L - front) * stretch];
         if (front === L) mode = 'settle';
       } else if (mode === 'settle' && late) {
         lateFor -= dt;
@@ -204,7 +232,7 @@ function RibbonName({ ink = '#0a0a0a' }) {
         const ty = over <= 0 ? rest[i][1] : from[1] + uy * over * per;
         // the late part rides the thread like the rest and only lags once it is its turn to form
         const slow = late && over <= 0 && mode !== 'drag' && arc[i] >= late[0] && arc[i] <= late[1];
-        const k = 1 - Math.exp(-(slow ? RN_LAG : RN_FOLLOW) * dt);
+        const k = 1 - Math.exp(-(slow ? RN_LAG : fine && over <= 0 && mode !== 'drag' ? RN_CRISP : RN_FOLLOW) * dt);
         pos[i][0] += (tx - pos[i][0]) * k; pos[i][1] += (ty - pos[i][1]) * k;
         off = Math.max(off, Math.abs(tx - pos[i][0]), Math.abs(ty - pos[i][1]));
       }
@@ -247,7 +275,8 @@ function RibbonName({ ink = '#0a0a0a' }) {
         if (far) load((form + 1) % RN_FORMS.length);
         pos = rest.map((p) => p.slice());
         front = L; end = rest[n - 1].slice(); mode = 'settle';
-      } else if (far) mode = 'undo';
+      } else if (far && fine) { flatFrom = pos.map((q) => q.slice()); flatT = 0; mode = 'flat'; }
+      else if (far) mode = 'undo';
       else reel();
     };
     const g = grip.current;
