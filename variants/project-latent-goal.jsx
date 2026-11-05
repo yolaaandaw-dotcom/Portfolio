@@ -59,7 +59,7 @@ function LatentGoalPage({ project, allProjects }) {
       </dl>
 
       <div style={{ marginTop: 56 }}>
-        <Label>The loop, running</Label>
+        <Label>Walk the mazes</Label>
         <window.MazeSim />
       </div>
 
