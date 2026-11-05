@@ -7,6 +7,11 @@ const PL_COL = 720;
 const PL_EASE = 'cubic-bezier(.16,1,.3,1)';
 const PL_REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// Diagnostic Mazes row draws a new maze every load (variants/maze-plate.jsx). Set to false to take it off.
+const PL_MAZE = true;
+// The name is one continuous line with a loose end that can be pulled (variants/ribbon-name.jsx).
+const PL_RIBBON_NAME = true;
+
 const PlainRow = React.memo(function PlainRow({ p, on, onEnter, onLeave }) {
   const Tag = p.locked ? 'div' : 'a';
   const linkProps = p.locked ? {} : { href: `projects/${p.id}.html` };
@@ -43,6 +48,11 @@ const PlainRow = React.memo(function PlainRow({ p, on, onEnter, onLeave }) {
           }} />
         </span>
       )}
+      {PL_MAZE && p.id === 'latent-goal' && (
+        <span style={{ display: 'block', marginTop: 14 }}>
+          <window.MazePlate ink={PL_INK} muted={PL_MUTED} />
+        </span>
+      )}
     </Tag>
   );
 });
@@ -50,7 +60,8 @@ const PlainRow = React.memo(function PlainRow({ p, on, onEnter, onLeave }) {
 function PlainList({ data }) {
   const sans = 'Roboto, system-ui, sans-serif';
   const [hover, setHover] = React.useState(null);
-  const live = data.projects.filter((p) => !p.wip && !p.minor && !p.proto);
+  const live = data.projects.filter((p) => !p.wip && !p.minor && !p.proto && !p.hri);
+  const hri = data.projects.filter((p) => p.hri && !p.wip && !p.minor);
   const proto = data.projects.filter((p) => p.proto && !p.wip && !p.minor);
   const wip = data.projects.filter((p) => p.wip);
   const minor = data.projects.filter((p) => p.minor);
@@ -71,10 +82,16 @@ function PlainList({ data }) {
         </div>
       )}
       <div style={{ maxWidth: PL_COL, margin: '0 auto', position: 'relative' }}>
-        <h1 style={{ fontSize: 17, fontWeight: 400, letterSpacing: -0.2, margin: 0 }}>
-          {data.name}<span style={{ color: PL_MUTED, marginLeft: 10 }}>{data.kanji}</span>
-        </h1>
-        <p style={{ fontSize: 15, lineHeight: 1.65, color: PL_INK, margin: '16px 0 0', maxWidth: '58ch' }}>{data.tagline}</p>
+        {PL_RIBBON_NAME ? (
+          <h1 style={{ fontSize: 17, fontWeight: 400, letterSpacing: -0.2, margin: 0 }}>
+            <window.RibbonName ink={PL_INK} />
+          </h1>
+        ) : (
+          <h1 style={{ fontSize: 17, fontWeight: 400, letterSpacing: -0.2, margin: 0 }}>
+            {data.name}<span style={{ color: PL_MUTED, marginLeft: 10 }}>{data.kanji}</span>
+          </h1>
+        )}
+        <p style={{ fontSize: 15, lineHeight: 1.65, color: PL_INK, margin: PL_RIBBON_NAME ? '10px 0 0' : '16px 0 0', maxWidth: '58ch' }}>{data.tagline}</p>
         <p style={{ fontSize: 15, lineHeight: 1.65, color: PL_MUTED, margin: '10px 0 0', maxWidth: '58ch' }}>
           Harvard GSD, MDes Mediums. Previously Industrial Design at RISD.
         </p>
@@ -94,6 +111,14 @@ function PlainList({ data }) {
           <div style={{ marginTop: 56 }}>
             <div style={{ fontSize: 10, color: PL_MUTED, textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 14 }}>Interactive prototypes</div>
             {rows(proto)}
+            <div style={{ borderTop: `1px solid ${PL_RULE}` }} />
+          </div>
+        )}
+
+        {hri.length > 0 && (
+          <div style={{ marginTop: 56 }}>
+            <div style={{ fontSize: 10, color: PL_MUTED, textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 14 }}>Human-robot interaction</div>
+            {rows(hri)}
             <div style={{ borderTop: `1px solid ${PL_RULE}` }} />
           </div>
         )}
