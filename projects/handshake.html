@@ -22,7 +22,7 @@
   <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
   <script>
     (function () {
-      var v = encodeURIComponent(document.lastModified || '');
+      var v = Math.floor(Date.now() / 600000);
       ["../data.jsx", "../variants/project-oscillations.jsx"].forEach(function (f) { document.write('<script type="text/babel" src="' + f + '?v=' + v + '"><\/script>'); });
     })();
   </script>

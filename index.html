@@ -33,7 +33,7 @@
     // GitHub Pages caches files for 10 minutes and browsers keep the .jsx files longer still.
     // Tag each one with this page's own last-modified stamp, so a new deploy refetches them.
     (function () {
-      var v = encodeURIComponent(document.lastModified || '');
+      var v = Math.floor(Date.now() / 600000);
       ['data.jsx', 'variants/logo-print.jsx', 'variants/maze-plate.jsx', 'variants/ribbon-name.jsx', 'variants/plain-list.jsx']
         .forEach(function (f) { document.write('<script type="text/babel" src="' + f + '?v=' + v + '"><\/script>'); });
     })();
