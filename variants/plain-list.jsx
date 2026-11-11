@@ -6,8 +6,8 @@ const PL_RULE = 'rgba(10,10,10,0.14)';
 const PL_COL = 720;
 const PL_EASE = 'cubic-bezier(.16,1,.3,1)';
 // section labels: one muted uppercase line, large enough to read as a heading
-// section labels: 13px medium, sentence case, a light slash in front
-const PL_LABEL = { fontSize: 13, fontWeight: 500, color: PL_INK, letterSpacing: -0.1, marginBottom: 16, display: 'flex', alignItems: 'baseline', gap: 9 };
+// section labels: 14px regular (the project titles' weight), sentence case, a light slash in front
+const PL_LABEL = { fontSize: 14, fontWeight: 400, color: PL_INK, letterSpacing: -0.2, marginBottom: 16, display: 'flex', alignItems: 'baseline', gap: 9 };
 function SectionLabel({ children }) {
   return (
     <div style={{ ...PL_LABEL }}>
