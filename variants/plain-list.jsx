@@ -57,14 +57,41 @@ const PlainRow = React.memo(function PlainRow({ p, on, onEnter, onLeave }) {
   );
 });
 
+// The smaller work, as one dense ledger: a title, one line, a short note on the right. No images.
+const ALSO_ORDER = ['latent-goal', 'tape-collage', 'rockite', 'lce', 'eeg-embroidery', 'eeg-crochet', 'biochar', 'elp', 'sticker-station', 'memo-umbrella', 'icarus'];
+const ALSO_PICTURED = ['latent-goal', 'tape-collage'];   // these two open the list with their picture; the rest are one line each
+function alsoNote(p) { return p.note || (p.wip ? 'In progress' : p.href ? 'Live' : p.venue || p.year || ''); }
+const AlsoRow = React.memo(function AlsoRow({ p, on, onEnter, onLeave }) {
+  const href = p.href || `projects/${p.id}.html`;
+  const ext = !!p.href;
+  return (
+    <a
+      href={href}
+      {...(ext ? { target: '_blank', rel: 'noopener' } : {})}
+      onMouseEnter={() => onEnter(p.id)}
+      onMouseLeave={onLeave}
+      style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', columnGap: 24, alignItems: 'baseline', padding: '9px 0', borderTop: `1px solid ${PL_RULE}`, textDecoration: 'none', color: PL_INK }}
+    >
+      <span style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', columnGap: 10, rowGap: 1 }}>
+        <span style={{ fontSize: 15, fontWeight: 400, letterSpacing: -0.2, textDecoration: on ? 'underline' : 'none', textUnderlineOffset: 3 }}>{p.title}</span>
+        <span style={{ fontSize: 13.5, fontWeight: 300, color: PL_MUTED, lineHeight: 1.5 }}>{p.short}</span>
+      </span>
+      <span style={{ fontSize: 11, color: PL_MUTED, letterSpacing: 0.6, whiteSpace: 'nowrap' }}>{alsoNote(p)}</span>
+    </a>
+  );
+});
+
 function PlainList({ data }) {
   const sans = 'Roboto, system-ui, sans-serif';
   const [hover, setHover] = React.useState(null);
-  const live = data.projects.filter((p) => !p.wip && !p.minor && !p.proto && !p.hri);
-  const hri = data.projects.filter((p) => p.hri && !p.wip && !p.minor);
-  const proto = data.projects.filter((p) => p.proto && !p.wip && !p.minor);
+  const small = (p) => p.minor || p.wip || p.href || p.also;
+  const live = data.projects.filter((p) => !small(p) && !p.proto && !p.hri);
+  const hri = data.projects.filter((p) => p.hri && !small(p));
+  const proto = data.projects.filter((p) => p.proto && !small(p));
   const wip = data.projects.filter((p) => p.wip);
   const minor = data.projects.filter((p) => p.minor);
+  const rank = (p) => { const i = ALSO_ORDER.indexOf(p.id); return i < 0 ? 999 : i; };
+  const also = data.projects.filter((p) => small(p) && !p.locked).sort((a, b) => rank(a) - rank(b));
 
   const enter = React.useCallback((id) => setHover(id), []);
   const leave = React.useCallback(() => setHover(null), []);
@@ -119,6 +146,16 @@ function PlainList({ data }) {
           <div style={{ marginTop: 56 }}>
             <div style={{ fontSize: 10, color: PL_MUTED, textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 14 }}>Human-robot interaction</div>
             {rows(hri)}
+            <div style={{ borderTop: `1px solid ${PL_RULE}` }} />
+          </div>
+        )}
+
+        {also.length > 0 && (
+          <div style={{ marginTop: 56 }}>
+            <div style={{ fontSize: 10, color: PL_MUTED, textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 10 }}>Also</div>
+            {also.map((p) => ALSO_PICTURED.includes(p.id)
+              ? <PlainRow key={p.id} p={p} on={hover === p.id} onEnter={enter} onLeave={leave} />
+              : <AlsoRow key={p.id} p={p} on={hover === p.id} onEnter={enter} onLeave={leave} />)}
             <div style={{ borderTop: `1px solid ${PL_RULE}` }} />
           </div>
         )}

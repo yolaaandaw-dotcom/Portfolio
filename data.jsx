@@ -83,6 +83,7 @@ const PORTFOLIO_DATA = {
     },
     {
       id: 'tape-collage',
+      note: 'Live · 2026',
       proto: true,
       href: 'https://yolaaandaw-dotcom.github.io/tape-collage/',
       venue: 'Live in the browser · 2026',
@@ -93,6 +94,7 @@ const PORTFOLIO_DATA = {
     },
     {
       id: 'sticker-station',
+      note: 'Live · 2026',
       proto: true,
       href: 'https://yolaaandaw-dotcom.github.io/sticker-station/',
       venue: 'Live in the browser · 2026',
@@ -131,7 +133,7 @@ const PORTFOLIO_DATA = {
       id: 'chair',
       venue: 'RISD',
       short: 'discarded branches held by ceramic joints printed to the ends they grip',
-      thumb: 'projects/assets/sticky/st00-thumb.png',
+      thumb: 'projects/assets/sticky/st00-cover.jpg',
       title: 'Sticky Node',
       subtitle: 'Discarded branches held together by ceramic joints printed to their own geometry.',
       year: '2024',
@@ -181,6 +183,7 @@ const PORTFOLIO_DATA = {
     },
     {
       id: 'latent-goal',
+      also: true,
       hri: true,
       short: 'an algorithm that picks the next maze to learn a player\'s preferences from their turns',
       venue: 'MIT 16.460 Algorithmic HRI',
@@ -304,6 +307,7 @@ const PORTFOLIO_DATA = {
     },
     {
       id: 'memo-umbrella',
+      note: 'RISD · 2023',
       minor: true,
       short: 'an umbrella that remembers where you were when it rained',
       title: 'Memo Umbrella',
@@ -338,6 +342,7 @@ const PORTFOLIO_DATA = {
     },
     {
       id: 'elp',
+      note: 'HTGAA 2026 · in progress',
       short: 'three protein variants that curl differently in humidity',
       venue: 'HTGAA 2026',
       wip: true,
@@ -364,6 +369,7 @@ const PORTFOLIO_DATA = {
     },
     {
       id: 'biochar',
+      note: 'Harvard GSD · in progress',
       short: 'biochar tuned until it prints',
       wip: true,
       title: 'Biochar-Based Direct Ink Writing',
