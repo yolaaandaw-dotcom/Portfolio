@@ -1,7 +1,7 @@
 // Shared data — projects, bio, meta.
 
 const PORTFOLIO_DATA = {
-  visible: (p) => !p.wip && !p.minor,
+  visible: (p) => !p.wip && !p.minor && !p.href,   // entries with href link out and have no page of their own
   name: 'Yao Wang',
   kanji: '王瑶',
   tagline:
