@@ -333,7 +333,7 @@ const PORTFOLIO_DATA = {
       note: '2025',
       minor: true,
       short: 'a short text game where every choice trades altitude for time',
-      title: 'Icarus Text Webgame',
+      title: 'Icarus: Text Webgame',
       year: '2025',
       blurb: 'Short text-driven webgame about flight and failure.',
       tags: ['narrative interaction', 'webgame', 'speculative interface'],
