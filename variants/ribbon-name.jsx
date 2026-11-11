@@ -64,7 +64,9 @@ const RN_CRISP = 70;          // the same for formed strokes of a fine form
 const RN_FLAT = 0.3;          // seconds a fine form takes to be pulled flat
 const RN_LAG = 2.4;           // the same for the part that settles late
 const RN_LATE = 0.45;         // seconds the late part keeps lagging after the rest is home
-const RN_DOT = '#ffc400';     // the pull tab at the loose end
+// the pull tab at the loose end: a different colour every time the page opens
+const RN_DOTS = ['#ffc400', '#ff6a00', '#ff3b30', '#ff2d87', '#8b5cf6', '#2f6bff', '#00b7d6', '#22b35a', '#a3d900', '#ff8fb1'];
+const RN_DOT = RN_DOTS[Math.floor(Math.random() * RN_DOTS.length)];
 const RN_OPEN = 700;          // ms the page shows the thread pulled out before winding the name in
 
 // Points along the whole line, and the arc length at which each part ends.
