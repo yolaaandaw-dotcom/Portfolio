@@ -64,7 +64,31 @@ const PlainRow = React.memo(function PlainRow({ p, on, onEnter, onLeave }) {
 });
 
 // The smaller work, as one dense ledger: a title, one line, a short note on the right. No images.
-const ALSO_ORDER = ['latent-goal', 'tape-collage', 'lce', 'eeg-embroidery', 'eeg-crochet', 'elp', 'biochar', 'sticker-station', 'rockite', 'icarus'];
+const ALSO_ORDER = ['latent-goal', 'tape-collage', 'critical-matter', 'elp', 'biochar', 'sticker-station', 'rockite', 'icarus'];
+// several small projects shown as one row: the titles link to their own pages, one line describes the set
+const ALSO_GROUPS = [
+  { id: 'critical-matter', items: ['lce', 'eeg-embroidery', 'eeg-crochet'], note: 'Critical Matter · 2024–2025',
+    short: 'three textiles from one course: embroidery that programs how a fabric deforms, and embroidery and crochet that respond to EEG' },
+];
+const AlsoGroupRow = React.memo(function AlsoGroupRow({ g, members, hover, onEnter, onLeave }) {
+  return (
+    <span style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', columnGap: 24, alignItems: 'baseline', padding: '9px 0', borderTop: `1px solid ${PL_RULE}`, color: PL_INK }}>
+      <span style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', columnGap: 10, rowGap: 1 }}>
+        <span style={{ display: 'inline-flex', flexWrap: 'wrap', columnGap: 8, rowGap: 1 }}>
+          {members.map((p, i) => (
+            <span key={p.id} style={{ display: 'inline-flex', columnGap: 8 }}>
+              <a href={`projects/${p.id}.html`} onMouseEnter={() => onEnter(p.id)} onMouseLeave={onLeave}
+                 style={{ fontSize: 15, fontWeight: 400, letterSpacing: -0.2, color: PL_INK, textDecoration: hover === p.id ? 'underline' : 'none', textUnderlineOffset: 3 }}>{p.title}</a>
+              {i < members.length - 1 && <span style={{ color: PL_MUTED }}>·</span>}
+            </span>
+          ))}
+        </span>
+        <span style={{ fontSize: 13.5, fontWeight: 300, color: PL_MUTED, lineHeight: 1.5 }}>{g.short}</span>
+      </span>
+      <span style={{ fontSize: 11, color: PL_MUTED, letterSpacing: 0.6, whiteSpace: 'nowrap' }}>{g.note}</span>
+    </span>
+  );
+});
 const ALSO_PICTURED = ['latent-goal', 'tape-collage'];   // these two open the list with their picture; the rest are one line each
 function alsoNote(p) { return p.note || (p.wip ? 'In progress' : p.href ? 'Live' : p.venue || p.year || ''); }
 const AlsoRow = React.memo(function AlsoRow({ p, on, onEnter, onLeave }) {
@@ -97,7 +121,11 @@ function PlainList({ data }) {
   const wip = data.projects.filter((p) => p.wip);
   const minor = data.projects.filter((p) => p.minor);
   const rank = (p) => { const i = ALSO_ORDER.indexOf(p.id); return i < 0 ? 999 : i; };
-  const also = data.projects.filter((p) => small(p) && !p.locked && !p.hide).sort((a, b) => rank(a) - rank(b));
+  const grouped = new Set(ALSO_GROUPS.flatMap((g) => g.items));
+  const also = [
+    ...data.projects.filter((p) => small(p) && !p.locked && !p.hide && !grouped.has(p.id)),
+    ...ALSO_GROUPS.map((g) => ({ ...g, group: true })),
+  ].sort((a, b) => rank(a) - rank(b));
 
   const enter = React.useCallback((id) => setHover(id), []);
   const leave = React.useCallback(() => setHover(null), []);
@@ -159,9 +187,11 @@ function PlainList({ data }) {
         {also.length > 0 && (
           <div style={{ marginTop: 56 }}>
             <div style={{ fontSize: 10, color: PL_MUTED, textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 10 }}>Also</div>
-            {also.map((p) => ALSO_PICTURED.includes(p.id)
-              ? <PlainRow key={p.id} p={p} on={hover === p.id} onEnter={enter} onLeave={leave} />
-              : <AlsoRow key={p.id} p={p} on={hover === p.id} onEnter={enter} onLeave={leave} />)}
+            {also.map((p) => p.group
+              ? <AlsoGroupRow key={p.id} g={p} members={p.items.map((id) => data.projects.find((x) => x.id === id)).filter(Boolean)} hover={hover} onEnter={enter} onLeave={leave} />
+              : ALSO_PICTURED.includes(p.id)
+                ? <PlainRow key={p.id} p={p} on={hover === p.id} onEnter={enter} onLeave={leave} />
+                : <AlsoRow key={p.id} p={p} on={hover === p.id} onEnter={enter} onLeave={leave} />)}
             <div style={{ borderTop: `1px solid ${PL_RULE}` }} />
           </div>
         )}
