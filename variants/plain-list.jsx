@@ -40,12 +40,18 @@ const PlainRow = React.memo(function PlainRow({ p, on, onEnter, onLeave }) {
         </span>
       </span>
       {p.thumb && (
-        <span style={{ display: 'block', overflow: 'hidden', marginTop: 14 }}>
+        <span style={{ display: 'block', overflow: 'hidden', marginTop: 14, position: 'relative' }}>
           <img src={p.thumb} alt="" style={{
             display: 'block', width: '100%', height: 168, objectFit: 'cover',
             border: `1px solid ${PL_RULE}`,
             opacity: on ? 1 : 0.88, transition: PL_REDUCED ? 'none' : 'opacity .2s ease',
           }} />
+          {p.award && (
+            <svg aria-label="winner" viewBox="0 0 24 24" width="22" height="22" style={{ position: 'absolute', top: 12, right: 12 }}>
+              <path d="M6 3h12v5a6 6 0 0 1-12 0z M10.5 13.5h3V17h-3z M8 17h8v2.6H8z" fill="#ffc400" />
+              <path d="M6 5H3v1.5a3.5 3.5 0 0 0 3.5 3.5 M18 5h3v1.5a3.5 3.5 0 0 1-3.5 3.5" fill="none" stroke="#ffc400" strokeWidth="1.8" strokeLinecap="round" />
+            </svg>
+          )}
         </span>
       )}
       {PL_MAZE && p.id === 'latent-goal' && (

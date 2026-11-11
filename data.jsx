@@ -53,6 +53,7 @@ const PORTFOLIO_DATA = {
     {
       id: 'climbit',
       proto: true,
+      award: true,
       venue: 'MIT HARD MODE Hackathon, WINNER',
       short: 'a handheld dodecahedron that turns grip training into a climbing game',
       title: 'Climbit',
