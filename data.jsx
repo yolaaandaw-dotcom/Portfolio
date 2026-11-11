@@ -159,7 +159,7 @@ const PORTFOLIO_DATA = {
       id: 'handshake',
       venue: 'RISD',
       short: 'a handshake read by sensing gloves and left behind as a ceramic brick',
-      thumb: 'projects/assets/oscillations/os00-thumb.png',
+      thumb: 'projects/assets/oscillations/os00-cover.jpg',
       title: 'Oscillations of Connection',
       subtitle: 'One handshake, read by a pair of sensing gloves, prints one ceramic brick.',
       year: '2024',
