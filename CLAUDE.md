@@ -14,7 +14,7 @@ Treat the existing pages (`index.html` spec-sheet ledger, `projects/tpu.html`, `
 ## Structure
 - Hairline rules and grid alignment do the separating. Avoid card treatments: no filled boxes with borders and padding, no rounded corners, no shadows, no pills or badges.
 - Images sit in plates with a 1px hairline border and small padding, nothing else.
-- Section headings are a single muted uppercase label (`Method`), not a heading stack.
+- Section headings on the index are one line: a light grey slash, then the name in 13px medium sentence case (`/ Digital fabrication`). Project pages keep the single muted uppercase label (`Method`). Never a heading stack.
 
 ## Copy
 - Short plain sentences. No em-dash asides, no "not X but Y", no summary or uplift line at the end of a section.

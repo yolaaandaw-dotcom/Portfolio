@@ -5,6 +5,17 @@ const PL_MUTED = 'rgba(10,10,10,0.55)';
 const PL_RULE = 'rgba(10,10,10,0.14)';
 const PL_COL = 720;
 const PL_EASE = 'cubic-bezier(.16,1,.3,1)';
+// section labels: one muted uppercase line, large enough to read as a heading
+// section labels: 13px medium, sentence case, a light slash in front
+const PL_LABEL = { fontSize: 13, fontWeight: 500, color: PL_INK, letterSpacing: -0.1, marginBottom: 16, display: 'flex', alignItems: 'baseline', gap: 9 };
+function SectionLabel({ children }) {
+  return (
+    <div style={{ ...PL_LABEL }}>
+      <span aria-hidden="true" style={{ fontSize: 15, fontWeight: 300, color: 'rgba(10,10,10,0.5)', lineHeight: 1 }}>/</span>
+      <span>{children}</span>
+    </div>
+  );
+}
 const PL_REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // Diagnostic Mazes row draws a new maze every load (variants/maze-plate.jsx). Set to false to take it off.
@@ -163,14 +174,14 @@ function PlainList({ data }) {
         </p>
 
         <div style={{ marginTop: 64 }}>
-          <div style={{ fontSize: 10, color: PL_MUTED, textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 14 }}>Digital fabrication</div>
+          <SectionLabel>Digital fabrication</SectionLabel>
           {rows(live)}
           <div style={{ borderTop: `1px solid ${PL_RULE}` }} />
         </div>
 
         {proto.length > 0 && (
           <div style={{ marginTop: 56 }}>
-            <div style={{ fontSize: 10, color: PL_MUTED, textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 14 }}>Interactive prototypes</div>
+            <SectionLabel>Interactive prototypes</SectionLabel>
             {rows(proto)}
             <div style={{ borderTop: `1px solid ${PL_RULE}` }} />
           </div>
@@ -178,7 +189,7 @@ function PlainList({ data }) {
 
         {hri.length > 0 && (
           <div style={{ marginTop: 56 }}>
-            <div style={{ fontSize: 10, color: PL_MUTED, textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 14 }}>Human-robot interaction</div>
+            <SectionLabel>Human-robot interaction</SectionLabel>
             {rows(hri)}
             <div style={{ borderTop: `1px solid ${PL_RULE}` }} />
           </div>
@@ -186,7 +197,7 @@ function PlainList({ data }) {
 
         {also.length > 0 && (
           <div style={{ marginTop: 56 }}>
-            <div style={{ fontSize: 10, color: PL_MUTED, textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 10 }}>Also</div>
+            <SectionLabel>Also</SectionLabel>
             {also.map((p) => p.group
               ? <AlsoGroupRow key={p.id} g={p} members={p.items.map((id) => data.projects.find((x) => x.id === id)).filter(Boolean)} hover={hover} onEnter={enter} onLeave={leave} />
               : ALSO_PICTURED.includes(p.id)
@@ -198,7 +209,7 @@ function PlainList({ data }) {
 
         {wip.length > 0 && false && (
           <div style={{ marginTop: 56 }}>
-            <div style={{ fontSize: 10, color: PL_MUTED, textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 14 }}>In progress</div>
+            <SectionLabel>In progress</SectionLabel>
             {rows(wip)}
             <div style={{ borderTop: `1px solid ${PL_RULE}` }} />
           </div>
@@ -206,7 +217,7 @@ function PlainList({ data }) {
 
         {minor.length > 0 && false && (
           <div style={{ marginTop: 56 }}>
-            <div style={{ fontSize: 10, color: PL_MUTED, textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 14 }}>Smaller projects</div>
+            <SectionLabel>Smaller projects</SectionLabel>
             {rows(minor)}
             <div style={{ borderTop: `1px solid ${PL_RULE}` }} />
           </div>
