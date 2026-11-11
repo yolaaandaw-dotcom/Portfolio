@@ -278,7 +278,7 @@ const PORTFOLIO_DATA = {
       year: '2026',
       blurb: 'When two people co-hold the handle, the umbrella records ambient rain audio and a low-resolution thermal trace. Later, when one person holds the handle alone with both hands, a projector renders an animated heat map inside the canopy paired with the stored rain sound.',
       tags: ['teleabsence', 'tangible interaction', 'memory objects', 'thermal experience'],
-      thumb: 'projects/assets/yousan/ys01-storyboard-w.jpg',
+      thumb: 'projects/assets/yousan/ys00-thumb.jpg',
       figures: [
         ['assets/yousan/ys01-storyboard-w.jpg', 'Two people co-hold the handle and the umbrella records. Later the stored thermal trace is projected onto the interior canopy. Memory is stored as trace, not content.'],
         ['assets/yousan/ys02-system-w.jpg', 'The three modes across a walk: ordinary use, co-holding as the capture gate, and the later solo two-hand grasp that replays the most recent trace.'],
