@@ -14,7 +14,7 @@ const PL_RIBBON_NAME = true;
 
 const PlainRow = React.memo(function PlainRow({ p, on, onEnter, onLeave }) {
   const Tag = p.locked ? 'div' : 'a';
-  const linkProps = p.locked ? {} : { href: `projects/${p.id}.html` };
+  const linkProps = p.locked ? {} : p.href ? { href: p.href, target: '_blank', rel: 'noopener' } : { href: `projects/${p.id}.html` };
   return (
     <Tag
       {...linkProps}
