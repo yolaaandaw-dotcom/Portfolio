@@ -6,16 +6,9 @@ const PL_RULE = 'rgba(10,10,10,0.14)';
 const PL_COL = 720;
 const PL_EASE = 'cubic-bezier(.16,1,.3,1)';
 // section labels: one muted uppercase line, large enough to read as a heading
-// section labels: 14px regular (the project titles' weight), sentence case, a light slash in front
-const PL_LABEL = { fontSize: 14, fontWeight: 400, color: PL_INK, letterSpacing: -0.2, marginBottom: 16, display: 'flex', alignItems: 'baseline', gap: 9 };
-function SectionLabel({ children }) {
-  return (
-    <div style={{ ...PL_LABEL }}>
-      <span aria-hidden="true" style={{ fontSize: 15, fontWeight: 300, color: 'rgba(10,10,10,0.5)', lineHeight: 1 }}>/</span>
-      <span>{children}</span>
-    </div>
-  );
-}
+// section labels: one small muted uppercase line, as the page always had
+const PL_LABEL = { fontSize: 10, color: PL_MUTED, textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 14 };
+function SectionLabel({ children }) { return <div style={{ ...PL_LABEL }}>{children}</div>; }
 const PL_REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // Diagnostic Mazes row draws a new maze every load (variants/maze-plate.jsx). Set to false to take it off.
