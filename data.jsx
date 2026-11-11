@@ -96,7 +96,7 @@ const PORTFOLIO_DATA = {
       proto: true,
       href: 'https://yolaaandaw-dotcom.github.io/sticker-station/',
       venue: 'Live in the browser · 2026',
-      short: 'a sticker sheet to peel by the corner, with eight materials lit from the pointer',
+      short: 'peel stickers by the corner, or drop a photo of a real sheet and it is cut into stickers in the browser',
       title: 'Sticker Station',
       year: '2026',
       thumb: 'projects/assets/tape-collage/ss00-thumb.jpg',
