@@ -58,7 +58,7 @@ const PlainRow = React.memo(function PlainRow({ p, on, onEnter, onLeave }) {
 });
 
 // The smaller work, as one dense ledger: a title, one line, a short note on the right. No images.
-const ALSO_ORDER = ['latent-goal', 'tape-collage', 'rockite', 'lce', 'eeg-embroidery', 'eeg-crochet', 'biochar', 'elp', 'sticker-station', 'memo-umbrella', 'icarus'];
+const ALSO_ORDER = ['latent-goal', 'tape-collage', 'lce', 'eeg-embroidery', 'eeg-crochet', 'elp', 'biochar', 'sticker-station', 'rockite', 'icarus'];
 const ALSO_PICTURED = ['latent-goal', 'tape-collage'];   // these two open the list with their picture; the rest are one line each
 function alsoNote(p) { return p.note || (p.wip ? 'In progress' : p.href ? 'Live' : p.venue || p.year || ''); }
 const AlsoRow = React.memo(function AlsoRow({ p, on, onEnter, onLeave }) {
@@ -91,7 +91,7 @@ function PlainList({ data }) {
   const wip = data.projects.filter((p) => p.wip);
   const minor = data.projects.filter((p) => p.minor);
   const rank = (p) => { const i = ALSO_ORDER.indexOf(p.id); return i < 0 ? 999 : i; };
-  const also = data.projects.filter((p) => small(p) && !p.locked).sort((a, b) => rank(a) - rank(b));
+  const also = data.projects.filter((p) => small(p) && !p.locked && !p.hide).sort((a, b) => rank(a) - rank(b));
 
   const enter = React.useCallback((id) => setHover(id), []);
   const leave = React.useCallback(() => setHover(null), []);
