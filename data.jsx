@@ -19,7 +19,7 @@ const PORTFOLIO_DATA = {
       locked: true,
       short: '3D printing on-fabric sensing mechanisms for smart textiles',
       venue: 'CHI 2027, under review',
-      thumb: 'projects/assets/senfabric/sf00-thumb.png',
+      thumb: 'projects/assets/senfabric/sf00-cover.jpg',
       title: 'SenFabric',
       year: '2026',
     },
