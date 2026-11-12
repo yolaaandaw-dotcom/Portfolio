@@ -66,7 +66,7 @@ const RN_TAB_AIR_MAX = 320;   // px/s beyond which the air does not push any har
 const RN_TAB_SPIN = 11;       // rad/s, the most it may turn: a tag on a string, not a propeller
 const RN_TAB_BREEZE = 55;     // px/s², the idle sway
 const RN_TAB_HOVER = 90;      // spring that turns it toward a nearby pointer
-const RN_TAB_REACH = 260;     // px: how close the pointer has to come before the ring starts leaning toward it
+const RN_TAB_REACH = 430;     // reaches the contact line below the name     // px: how close the pointer has to come before the ring starts leaning toward it
 
 // Points along the whole line, and the arc length at which each part ends.
 function ribbonLine(parts) {
@@ -296,7 +296,8 @@ function RibbonName({ ink = '#0a0a0a' }) {
           const dx = ptr[0] - p[0], dy = ptr[1] - p[1], d = Math.hypot(dx, dy) || 1;
           const want = Math.atan2(dx, dy);                   // the ring points at the pointer
           let e = want - th; e = Math.atan2(Math.sin(e), Math.cos(e));
-          const pull = Math.pow(1 - Math.min(1, d / RN_TAB_REACH), 0.6);   // stronger the closer the pointer comes
+          const q = Math.min(1, d / RN_TAB_REACH);
+          const pull = q < 0.5 ? 1 : 1 - 0.65 * (q - 0.5) / 0.5;   // full strength up to half the reach, still a clear lean at the edge
           acc += RN_TAB_HOVER * pull * e - (4 + 10 * pull) * om;
         }
         om = Math.max(-RN_TAB_SPIN, Math.min(RN_TAB_SPIN, om + acc * h));
