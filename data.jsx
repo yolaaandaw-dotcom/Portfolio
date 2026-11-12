@@ -5,7 +5,6 @@ const PORTFOLIO_DATA = {
   name: 'Yao Wang',
   kanji: '王瑶',
   identity: 'MDes Mediums candidate at Harvard GSD. Research Assistant, MaP+S, Harvard GSD (collaboration with Jennifer Lewis Lab). Visiting Student, HCI Engineering Group (Stefanie Mueller), MIT CSAIL.',
-  cv: 'Yao_Wang_CV.pdf',
   tagline:
     'Design research on computational fabrication, soft and active materials, and how people and machines make things together.',
   affiliation: 'MDes Mediums · Harvard GSD',

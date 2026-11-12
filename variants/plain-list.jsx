@@ -170,7 +170,7 @@ function PlainList({ data }) {
           <a href={`mailto:${data.email}`} style={{ color: PL_INK, textDecorationThickness: 1, textUnderlineOffset: 3 }}>{data.email}</a>
           <a href={`mailto:${data.emailAlt}`} style={{ color: PL_INK, textDecorationThickness: 1, textUnderlineOffset: 3 }}>{data.emailAlt}</a>
           <a href={data.linkedin} style={{ color: PL_INK, textDecorationThickness: 1, textUnderlineOffset: 3 }}>LinkedIn</a>
-          {data.cv && <a href={data.cv} style={{ color: PL_INK, textDecorationThickness: 1, textUnderlineOffset: 3 }}>CV</a>}
+          <a href={`mailto:${data.email}?subject=CV%20request`} style={{ color: PL_INK, textDecorationThickness: 1, textUnderlineOffset: 3 }}>CV on request</a>
         </p>
 
         <div style={{ marginTop: 64 }}>
