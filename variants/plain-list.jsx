@@ -157,7 +157,7 @@ function PlainList({ data }) {
             {data.name}<span style={{ color: PL_MUTED, marginLeft: 10 }}>{data.kanji}</span>
           </h1>
         )}
-        <p style={{ fontSize: 16, lineHeight: 1.6, color: PL_INK, margin: PL_RIBBON_NAME ? '10px 0 0' : '16px 0 0', maxWidth: '58ch' }}>{data.tagline}</p>
+        <p style={{ fontSize: 16, lineHeight: 1.6, color: PL_INK, margin: PL_RIBBON_NAME ? '30px 0 0' : '16px 0 0', maxWidth: '58ch' }}>{data.tagline}</p>
         {data.identity && (
           <p style={{ fontSize: 15, lineHeight: 1.6, color: PL_INK, margin: '10px 0 0' }}>
             {data.identity.split(/(?<=\.)\s+/).map((line) => <span key={line} style={{ display: 'block' }}>{line}</span>)}

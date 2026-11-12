@@ -40,17 +40,6 @@ const RN_FORMS = [
         [152, 100, 0], [152, 84, 0], [152, 100, 0], [188, 100, 0], [188, 84, 0], [188, 100, 0], [212, 100, 0]],
     ],
   },
-  {
-    // a small flower with a line running back and forth on either side of it
-    label: 'A small flower',
-    fine: true,
-    parts: [
-      [[0, 100, 0], [0, 22, 6.5], [13, 22, 6.5], [13, 100, 6.5], [26, 100, 6.5], [26, 22, 6.5], [39, 22, 6.5], [39, 100, 6.5], [52, 100, 6.5], [52, 22, 6.5], [65, 22, 6.5], [65, 75.2, 4]],
-      [[115.4, 58.8, 0], [81, 65.1, 12], [94.6, 23.3, 12], [118.7, 48.7, 0], [102, 17.9, 12], [146, 17.9, 12], [129.3, 48.7, 0]],
-      [[153.4, 23.3, 12], [167, 65.1, 12], [132.6, 58.8, 0], [164.2, 73.9, 12], [128.6, 99.8, 12], [124, 65, 0], [119.4, 99.8, 12], [83.8, 73.9, 12], [115.4, 58.8, 0], [132.6, 58.8, 0]],
-      [[183, 75.2, 4], [183, 100, 6.5], [196, 100, 6.5], [196, 22, 6.5], [209, 22, 6.5], [209, 100, 6.5], [222, 100, 6.5], [222, 22, 6.5], [235, 22, 6.5], [235, 100, 6.5], [248, 100, 6.5], [248, 22, 6.5], [261, 22, 6.5], [261, 100, 0]],
-    ],
-  },
 ];
 const RN_SCALE = 0.42;
 const RN_TOP = 6;             // grid units trimmed above the caps
@@ -66,7 +55,17 @@ const RN_LAG = 2.4;           // the same for the part that settles late
 const RN_LATE = 0.45;         // seconds the late part keeps lagging after the rest is home
 const RN_DOT = '#00b7d6';     // the pull tab at the loose end
 const RN_OPEN = 250;          // ms the page shows the thread pulled out before winding the name in
-const RN_NUDGE = 2600;        // ms after that, the tab slides out and back once: it can be pulled
+const RN_DEMO = 2200;         // ms after the name has formed, the tab pulls itself out a little and winds back: a demonstration
+const RN_DEMO_PULL = 72;      // px it pulls out in the demonstration
+// the pull ring is a small pendulum hung from the thread's end: gravity, damping, a breeze, and the air it flies through
+const RN_TAB_L = 14.5;        // px from the thread's end to the ring's centre
+const RN_TAB_G = 900;         // px/s², gravity as this little thing feels it
+const RN_TAB_DAMP = 2.6;      // per second
+const RN_TAB_AIR = 0.02;      // how strongly the air turns it to trail behind a moving end, per px/s of speed
+const RN_TAB_AIR_MAX = 320;   // px/s beyond which the air does not push any harder
+const RN_TAB_SPIN = 11;       // rad/s, the most it may turn: a tag on a string, not a propeller
+const RN_TAB_BREEZE = 55;     // px/s², the idle sway
+const RN_TAB_HOVER = 70;      // spring that stands it up to the right under the pointer
 
 // Points along the whole line, and the arc length at which each part ends.
 function ribbonLine(parts) {
@@ -108,13 +107,13 @@ function ribbonLine(parts) {
 if (!document.getElementById('ribbon-name-kf')) {
   const s = document.createElement('style');
   s.id = 'ribbon-name-kf';
-  s.textContent = '@keyframes rnBlink{0%,100%{opacity:1}50%{opacity:.12}}@keyframes rnNudge{0%,100%{translate:0 0}45%{translate:14px 0}}';
+  s.textContent = '@keyframes rnBlink{0%,100%{opacity:1}50%{opacity:.12}}@keyframes rnNudge{0%,100%{translate:0 0}45%{translate:14px 0}}@keyframes rnSway{from{transform:rotate(-9deg)}to{transform:rotate(9deg)}}';
   document.head.appendChild(s);
 }
 
 function RibbonName({ ink = '#0a0a0a' }) {
   const svg = React.useRef(null), line = React.useRef(null);
-  const dot = React.useRef(null), grip = React.useRef(null);
+  const dot = React.useRef(null), tab = React.useRef(null), grip = React.useRef(null), hint = React.useRef(null);
 
   React.useEffect(() => {
     const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -128,7 +127,10 @@ function RibbonName({ ink = '#0a0a0a' }) {
     let end = rest[n - 1].slice();  // where the loose end is held
     let stretch = 1;                // straight thread drawn per unit of line still to wind in
     let grab = [0, 0], late = null, lateFor = 0, frame = 0, last = 0, opening = 0;
-    let nudging;
+    let nudging, demoFrom = null, demoT = 0, touched = false, demoDone = false, hintShown = false, hiding = 0;
+    let th = 0, om = 0, pv = null, pvel = [0, 0], tnow = 0;   // pendulum angle (0 hangs down, +90° points right), its rate, previous pivot and velocity
+    const showHint = () => {};
+    const hideHint = (after) => { clearTimeout(hiding); hiding = setTimeout(() => { if (hint.current) hint.current.style.opacity = '0'; }, after); };
     let fine = false, held = end.slice(), front0 = 0, flatFrom = null, flatT = 0;
 
     const restAt = (l) => {
@@ -153,9 +155,9 @@ function RibbonName({ ink = '#0a0a0a' }) {
       let path = '';
       for (let i = 0; i < n; i++) path += `${i ? 'L' : 'M'}${pos[i][0].toFixed(1)} ${pos[i][1].toFixed(1)}`;
       line.current.setAttribute('d', path);
-      for (const el of [dot.current, grip.current]) {
-        el.setAttribute('cx', pos[n - 1][0]); el.setAttribute('cy', pos[n - 1][1]);
-      }
+      grip.current.setAttribute('cx', pos[n - 1][0]); grip.current.setAttribute('cy', pos[n - 1][1]);
+      dot.current.setAttribute('transform', `translate(${pos[n - 1][0].toFixed(1)} ${pos[n - 1][1].toFixed(1)})`);
+      if (hint.current) { hint.current.setAttribute('x', pos[n - 1][0] + 13); hint.current.setAttribute('y', pos[n - 1][1] + 4); }
     };
 
     const load = (i) => {
@@ -168,6 +170,7 @@ function RibbonName({ ink = '#0a0a0a' }) {
 
     // Wind in what is out. One of the parts that came fully undone settles late.
     const reel = () => {
+      setTimeout(setTab, 0);
       const from = restAt(front);
       stretch = L - front > 1 ? Math.hypot(end[0] - from[0], end[1] - from[1]) / (L - front) : 1;
       const undone = ends.map((e, k) => [k ? ends[k - 1] : 0, e]).filter(([a]) => a >= front - 1);
@@ -190,6 +193,7 @@ function RibbonName({ ink = '#0a0a0a' }) {
     const step = (now) => {
       const dt = Math.min(0.05, (now - last) / 1000 || 0.016);
       last = now;
+      const wasRest = mode === 'rest';   // at rest only the ring moves: no need to redraw the line
       if (mode === 'flat') {
         // every point goes straight to its place on the thread, so the form flattens without spikes
         flatT = Math.min(1, flatT + dt / RN_FLAT);
@@ -209,7 +213,14 @@ function RibbonName({ ink = '#0a0a0a' }) {
       ux /= ul; uy /= ul;
       if (mode === 'drag') {
         front = findFront();
-        if (front === 0) end = [rest[0][0] + ux * L, rest[0][1] + uy * L];
+        if (front === 0) end = bound([rest[0][0] + ux * L, rest[0][1] + uy * L]);
+      } else if (mode === 'demo') {
+        // the page pulls the tab out a little by itself, the way a hand would, then lets it wind back
+        demoT = Math.min(1, demoT + dt / 0.7);
+        const e = demoT < 0.5 ? 2 * demoT * demoT : 1 - Math.pow(-2 * demoT + 2, 2) / 2;
+        end = [demoFrom[0] + RN_DEMO_PULL * e, demoFrom[1]];
+        front = findFront();
+        if (demoT === 1) { mode = 'demohold'; demoDone = true; setTimeout(() => { if (mode === 'demohold') reel(); }, 260); }
       } else if (mode === 'undo') {
         front = Math.max(0, front - RN_UNDO * dt);
       } else if (mode === 'reel') {
@@ -242,12 +253,46 @@ function RibbonName({ ink = '#0a0a0a' }) {
       if (mode === 'settle' && off < 0.05) {
         mode = 'rest';
         for (let i = 0; i < n; i++) { pos[i][0] = rest[i][0]; pos[i][1] = rest[i][1]; }
+        if (!touched) { showHint(); if (demoDone) hideHint(1500); }
       }
-      draw();
-      frame = mode === 'rest' ? 0 : requestAnimationFrame(step);
+      if (!wasRest) draw();
+      const moving = swing(dt, now);
+      frame = mode === 'rest' && !moving && !over ? 0 : requestAnimationFrame(step);
     };
     const wake = () => { if (!frame) { last = performance.now(); frame = requestAnimationFrame(step); } };
 
+    let over = false;
+    const setTab = () => { wake(); };
+    const onEnter = () => { over = true; wake(); };
+    const onLeave = () => { over = false; wake(); };
+    // one frame of the pendulum: the thread's end is its pivot, so whatever moves the end swings the ring
+    const swing = (dt, now) => {
+      const p = pos[n - 1];
+      if (!pv) { pv = p.slice(); }
+      const vx = (p[0] - pv[0]) / dt, vy = (p[1] - pv[1]) / dt;
+      const ax = (vx - pvel[0]) / dt, ay = (vy - pvel[1]) / dt;
+      pv = p.slice(); pvel = [vx, vy];
+      const speed = Math.hypot(vx, vy);
+      const sub = 4, h = dt / sub;
+      for (let k = 0; k < sub; k++) {
+        const fx = -Math.max(-2400, Math.min(2400, ax)) + RN_TAB_BREEZE * Math.sin(now / 1000 * 2.1) + RN_TAB_BREEZE * 0.4 * Math.sin(now / 1000 * 3.7 + 1);
+        const fy = RN_TAB_G - Math.max(-2400, Math.min(2400, ay));
+        const air = Math.min(speed, RN_TAB_AIR_MAX);
+        let acc = (fx * Math.cos(th) - fy * Math.sin(th)) / RN_TAB_L - (RN_TAB_DAMP + RN_TAB_AIR * air * 1.5) * om;   // moving air also damps
+        if (speed > 20) {                                   // flying: the air lays it out behind the end
+          const trail = Math.atan2(-vx, -vy);
+          let d = trail - th; d = Math.atan2(Math.sin(d), Math.cos(d));   // the short way round
+          acc += RN_TAB_AIR * air * Math.sin(d) * 60;
+        }
+        if (over && mode !== 'drag') acc += RN_TAB_HOVER * (Math.PI / 2 - th) - 6 * om;
+        om = Math.max(-RN_TAB_SPIN, Math.min(RN_TAB_SPIN, om + acc * h));
+        th += om * h;
+        if (th > Math.PI) { th = Math.PI; om = Math.min(0, om) * 0.3; }       // it cannot pass up through the thread
+        if (th < -Math.PI) { th = -Math.PI; om = Math.max(0, om) * 0.3; }
+      }
+      if (tab.current) tab.current.style.transform = `rotate(${(-th * 180 / Math.PI).toFixed(2)}deg)`;
+      return Math.abs(om) > 0.02 || Math.abs(th) > 0.01 || over;
+    };
     const local = (e) => {
       const r = svg.current.getBoundingClientRect();
       return [e.clientX - r.left, e.clientY - r.top];
@@ -260,18 +305,24 @@ function RibbonName({ ink = '#0a0a0a' }) {
       clearTimeout(opening); clearTimeout(nudging);
       try { grip.current.setPointerCapture(e.pointerId); } catch (err) {}
       grip.current.style.cursor = 'grabbing';
-      dot.current.style.animation = 'none';   // found: no need to keep blinking
+      setTab();
+      touched = true; clearTimeout(hiding); if (hint.current) hint.current.style.opacity = '0';
       e.preventDefault();
       wake();
+    };
+    const bound = (pt) => {           // keep the loose end inside the column, so the page never scrolls sideways
+      const w = svg.current.parentElement.clientWidth, h = (RN_H - RN_TOP) * RN_SCALE;
+      return [Math.max(-8, Math.min(w + 8, pt[0])), Math.max(-h, Math.min(h * 2.2, pt[1]))];
     };
     const onMove = (e) => {
       if (mode !== 'drag') return;
       const p = local(e);
-      end = [p[0] - grab[0], p[1] - grab[1]];
+      end = bound([p[0] - grab[0], p[1] - grab[1]]);
     };
     const onUp = () => {
       if (mode !== 'drag') return;
       grip.current.style.cursor = 'grab';
+      setTimeout(setTab, 0);
       const far = L - front > RN_NEXT;
       if (reduced) {
         if (far) load((form + 1) % RN_FORMS.length);
@@ -282,6 +333,8 @@ function RibbonName({ ink = '#0a0a0a' }) {
       else reel();
     };
     const g = grip.current;
+    g.addEventListener('pointerenter', onEnter);
+    g.addEventListener('pointerleave', onLeave);
     g.addEventListener('pointerdown', onDown);
     g.addEventListener('pointermove', onMove);
     g.addEventListener('pointerup', onUp);
@@ -298,12 +351,18 @@ function RibbonName({ ink = '#0a0a0a' }) {
       }
       mode = 'open';
       opening = setTimeout(reel, RN_OPEN);
-      nudging = setTimeout(() => { if (dot.current && mode !== 'drag' && dot.current.style.animation !== 'none') dot.current.style.animation = 'rnNudge .9s ease-in-out 1, rnBlink 1.3s ease-in-out infinite'; }, RN_OPEN + RN_NUDGE);
+      nudging = setTimeout(() => {
+        if (touched || (mode !== 'rest' && mode !== 'settle')) { hideHint(3000); return; }
+        demoFrom = rest[n - 1].slice(); demoT = 0; late = null; mode = 'demo'; setTab(); wake();
+      }, RN_OPEN + RN_DEMO);
     }
+    if (reduced) { setTimeout(() => { showHint(); hideHint(3500); }, 800); }
     draw();
     return () => {
       clearTimeout(opening); clearTimeout(nudging);
       cancelAnimationFrame(frame);
+      g.removeEventListener('pointerenter', onEnter);
+      g.removeEventListener('pointerleave', onLeave);
       g.removeEventListener('pointerdown', onDown);
       g.removeEventListener('pointermove', onMove);
       g.removeEventListener('pointerup', onUp);
@@ -319,8 +378,13 @@ function RibbonName({ ink = '#0a0a0a' }) {
       style={{ display: 'block', flex: 'none', overflow: 'visible', position: 'relative', zIndex: 2, pointerEvents: 'none' }}
     >
       <path ref={line} fill="none" stroke={ink} strokeWidth="2" strokeLinecap="round" strokeLinejoin="miter" />
-      <circle ref={dot} r="4.5" fill={RN_DOT} style={{ animation: still ? 'none' : 'rnBlink 1.3s ease-in-out infinite' }} />
-      <circle ref={grip} r="16" fill="transparent" style={{ pointerEvents: 'all', cursor: 'grab', touchAction: 'none' }} />
+      <g ref={dot}>
+        <g ref={tab} style={{ transformOrigin: '0px 0px' }}>
+          <line x1="0" y1="0" x2="0" y2="9" stroke={ink} strokeWidth="1.6" strokeLinecap="round" />
+          <circle cx="0" cy="14.5" r="5.5" fill="#fff" stroke={RN_DOT} strokeWidth="2" />
+        </g>
+      </g>
+      <circle ref={grip} r="22" fill="transparent" style={{ pointerEvents: 'all', cursor: 'grab', touchAction: 'none' }} />
     </svg>
   );
 }
