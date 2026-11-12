@@ -65,7 +65,8 @@ const RN_TAB_AIR = 0.02;      // how strongly the air turns it to trail behind a
 const RN_TAB_AIR_MAX = 320;   // px/s beyond which the air does not push any harder
 const RN_TAB_SPIN = 11;       // rad/s, the most it may turn: a tag on a string, not a propeller
 const RN_TAB_BREEZE = 55;     // px/s², the idle sway
-const RN_TAB_HOVER = 70;      // spring that stands it up to the right under the pointer
+const RN_TAB_HOVER = 90;      // spring that turns it toward a nearby pointer
+const RN_TAB_REACH = 260;     // px: how close the pointer has to come before the ring starts leaning toward it
 
 // Points along the whole line, and the arc length at which each part ends.
 function ribbonLine(parts) {
@@ -261,10 +262,17 @@ function RibbonName({ ink = '#0a0a0a' }) {
     };
     const wake = () => { if (!frame) { last = performance.now(); frame = requestAnimationFrame(step); } };
 
-    let over = false;
+    let over = false, ptr = null;            // over: the pointer is within reach; ptr: where it is, in svg coords
     const setTab = () => { wake(); };
     const onEnter = () => { over = true; wake(); };
     const onLeave = () => { over = false; wake(); };
+    const onNear = (e) => {
+      const r = svg.current.getBoundingClientRect();
+      ptr = [e.clientX - r.left, e.clientY - r.top];
+      const d = Math.hypot(ptr[0] - pos[n - 1][0], ptr[1] - pos[n - 1][1]);
+      const near = d < RN_TAB_REACH;
+      if (near !== over) { over = near; wake(); }
+    };
     // one frame of the pendulum: the thread's end is its pivot, so whatever moves the end swings the ring
     const swing = (dt, now) => {
       const p = pos[n - 1];
@@ -284,7 +292,13 @@ function RibbonName({ ink = '#0a0a0a' }) {
           let d = trail - th; d = Math.atan2(Math.sin(d), Math.cos(d));   // the short way round
           acc += RN_TAB_AIR * air * Math.sin(d) * 60;
         }
-        if (over && mode !== 'drag') acc += RN_TAB_HOVER * (Math.PI / 2 - th) - 6 * om;
+        if (over && ptr && mode !== 'drag') {
+          const dx = ptr[0] - p[0], dy = ptr[1] - p[1], d = Math.hypot(dx, dy) || 1;
+          const want = Math.atan2(dx, dy);                   // the ring points at the pointer
+          let e = want - th; e = Math.atan2(Math.sin(e), Math.cos(e));
+          const pull = Math.pow(1 - Math.min(1, d / RN_TAB_REACH), 0.6);   // stronger the closer the pointer comes
+          acc += RN_TAB_HOVER * pull * e - (4 + 10 * pull) * om;
+        }
         om = Math.max(-RN_TAB_SPIN, Math.min(RN_TAB_SPIN, om + acc * h));
         th += om * h;
         if (th > Math.PI) { th = Math.PI; om = Math.min(0, om) * 0.3; }       // it cannot pass up through the thread
@@ -333,8 +347,7 @@ function RibbonName({ ink = '#0a0a0a' }) {
       else reel();
     };
     const g = grip.current;
-    g.addEventListener('pointerenter', onEnter);
-    g.addEventListener('pointerleave', onLeave);
+    document.addEventListener('pointermove', onNear, { passive: true });
     g.addEventListener('pointerdown', onDown);
     g.addEventListener('pointermove', onMove);
     g.addEventListener('pointerup', onUp);
@@ -361,8 +374,7 @@ function RibbonName({ ink = '#0a0a0a' }) {
     return () => {
       clearTimeout(opening); clearTimeout(nudging);
       cancelAnimationFrame(frame);
-      g.removeEventListener('pointerenter', onEnter);
-      g.removeEventListener('pointerleave', onLeave);
+      document.removeEventListener('pointermove', onNear);
       g.removeEventListener('pointerdown', onDown);
       g.removeEventListener('pointermove', onMove);
       g.removeEventListener('pointerup', onUp);
@@ -384,7 +396,7 @@ function RibbonName({ ink = '#0a0a0a' }) {
           <circle cx="0" cy="14.5" r="5.5" fill="#fff" stroke={RN_DOT} strokeWidth="2" />
         </g>
       </g>
-      <circle ref={grip} r="22" fill="transparent" style={{ pointerEvents: 'all', cursor: 'grab', touchAction: 'none' }} />
+      <circle ref={grip} r="28" fill="transparent" style={{ pointerEvents: 'all', cursor: 'grab', touchAction: 'none' }} />
     </svg>
   );
 }
