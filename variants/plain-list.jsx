@@ -1,7 +1,7 @@
 // Plain list index. One narrow column: who, then what.
 // Every row keeps its plate open; hovering only underlines the title.
 const PL_INK = '#0a0a0a';
-const PL_MUTED = 'rgba(10,10,10,0.55)';
+const PL_MUTED = 'rgba(10,10,10,0.68)';   // secondary text: dark enough to read without effort
 const PL_RULE = 'rgba(10,10,10,0.14)';
 const PL_COL = 720;
 const PL_EASE = 'cubic-bezier(.16,1,.3,1)';
@@ -32,8 +32,9 @@ const PlainRow = React.memo(function PlainRow({ p, on, onEnter, onLeave }) {
     >
       <span style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', columnGap: 24, alignItems: 'baseline' }}>
         <span style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', columnGap: 12, rowGap: 2 }}>
-          <span style={{ fontSize: 17, fontWeight: 400, letterSpacing: -0.3, textDecoration: on && !p.locked ? 'underline' : 'none', textUnderlineOffset: 3 }}>{p.title}</span>
+          <span style={{ fontSize: 18, fontWeight: 400, letterSpacing: -0.3, textDecoration: on && !p.locked ? 'underline' : 'none', textUnderlineOffset: 3 }}>{p.title}</span>
           <span style={{ fontSize: 14, fontWeight: 300, color: PL_MUTED, lineHeight: 1.5 }}>{p.short || p.blurb}</span>
+          {p.locked && p.lockedNote && <span style={{ flexBasis: '100%', fontSize: 12, fontWeight: 300, color: PL_MUTED, lineHeight: 1.5 }}>{p.lockedNote}</span>}
         </span>
         <span style={{ fontSize: 11, color: PL_MUTED, letterSpacing: 0.6, whiteSpace: 'nowrap' }}>
           {(p.venue || p.year || '').split(/(WINNER)/).map((seg, i) => (
@@ -45,8 +46,8 @@ const PlainRow = React.memo(function PlainRow({ p, on, onEnter, onLeave }) {
       </span>
       {p.thumb && (
         <span style={{ display: 'block', overflow: 'hidden', marginTop: 14, position: 'relative' }}>
-          <img src={p.thumb} alt="" style={{
-            display: 'block', width: '100%', height: 168, objectFit: 'cover',
+          <img src={p.hero && p.heroThumb ? p.heroThumb : p.thumb} alt="" style={{
+            display: 'block', width: '100%', height: p.hero ? 'auto' : 168, objectFit: 'cover',
             border: `1px solid ${PL_RULE}`,
             opacity: on ? 1 : 0.88, transition: PL_REDUCED ? 'none' : 'opacity .2s ease',
           }} />
@@ -156,14 +157,20 @@ function PlainList({ data }) {
             {data.name}<span style={{ color: PL_MUTED, marginLeft: 10 }}>{data.kanji}</span>
           </h1>
         )}
-        <p style={{ fontSize: 15, lineHeight: 1.65, color: PL_INK, margin: PL_RIBBON_NAME ? '10px 0 0' : '16px 0 0', maxWidth: '58ch' }}>{data.tagline}</p>
-        <p style={{ fontSize: 15, lineHeight: 1.65, color: PL_MUTED, margin: '10px 0 0', maxWidth: '58ch' }}>
-          Harvard GSD, MDes Mediums. Previously Industrial Design at RISD.
+        <p style={{ fontSize: 16, lineHeight: 1.6, color: PL_INK, margin: PL_RIBBON_NAME ? '10px 0 0' : '16px 0 0', maxWidth: '58ch' }}>{data.tagline}</p>
+        {data.identity && (
+          <p style={{ fontSize: 15, lineHeight: 1.6, color: PL_INK, margin: '10px 0 0' }}>
+            {data.identity.split(/(?<=\.)\s+/).map((line) => <span key={line} style={{ display: 'block' }}>{line}</span>)}
+          </p>
+        )}
+        <p style={{ fontSize: 15, lineHeight: 1.6, color: PL_MUTED, margin: '8px 0 0', maxWidth: '58ch' }}>
+          Previously Industrial Design at RISD.
         </p>
         <p style={{ fontSize: 15, lineHeight: 1.65, margin: '10px 0 0', display: 'flex', flexWrap: 'wrap', gap: 16 }}>
           <a href={`mailto:${data.email}`} style={{ color: PL_INK, textDecorationThickness: 1, textUnderlineOffset: 3 }}>{data.email}</a>
           <a href={`mailto:${data.emailAlt}`} style={{ color: PL_INK, textDecorationThickness: 1, textUnderlineOffset: 3 }}>{data.emailAlt}</a>
           <a href={data.linkedin} style={{ color: PL_INK, textDecorationThickness: 1, textUnderlineOffset: 3 }}>LinkedIn</a>
+          {data.cv && <a href={data.cv} style={{ color: PL_INK, textDecorationThickness: 1, textUnderlineOffset: 3 }}>CV</a>}
         </p>
 
         <div style={{ marginTop: 64 }}>

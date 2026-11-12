@@ -1,6 +1,6 @@
 // Project-specific page for handshake (Oscillations of Connection).
 const OS_INK = '#0a0a0a';
-const OS_MUTED = 'rgba(10,10,10,0.55)';
+const OS_MUTED = 'rgba(10,10,10,0.68)';
 const OS_RULE = 'rgba(10,10,10,0.14)';
 
 function OscillationsPage({ project, allProjects }) {
@@ -60,6 +60,11 @@ function OscillationsPage({ project, allProjects }) {
       <Reveal i={2} style={{ marginTop: 18 }}>
         <div style={{ fontFamily: sans, fontWeight: 300, fontSize: 17, color: OS_MUTED, lineHeight: 1.5, maxWidth: '56ch' }}>{project.subtitle}</div>
       </Reveal>
+      <Reveal i={3} style={{ marginTop: 36 }}>
+        <Plate src="os01-cover.jpg" alt="Two gloved hands reaching toward each other and a field of printed ceramic bricks" bg="#0a0a0a" framed />
+        <Cap>The sensing gloves and the bricks printed from what they recorded.</Cap>
+      </Reveal>
+
       <Reveal i={3} style={{ marginTop: 28 }}>
         <p style={{ fontFamily: sans, fontWeight: 300, fontSize: 16, lineHeight: 1.65, margin: 0, maxWidth: '64ch', color: OS_INK }}>{project.blurb}</p>
       </Reveal>
@@ -75,10 +80,6 @@ function OscillationsPage({ project, allProjects }) {
         </dl>
       </Reveal>
 
-      <Reveal i={5} style={{ marginTop: 72 }}>
-        <Plate src="os01-cover.jpg" alt="Two gloved hands reaching toward each other and a field of printed ceramic bricks" bg="#0a0a0a" framed />
-        <Cap>The sensing gloves and the bricks printed from what they recorded.</Cap>
-      </Reveal>
 
       <Reveal i={6} style={{ marginTop: 80 }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.3fr', gap: 48 }}>

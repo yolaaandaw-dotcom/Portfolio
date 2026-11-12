@@ -3,7 +3,7 @@
 // numbered sections, footnote-style meta. Pure B/W.
 
 const LR_INK = '#0a0a0a';
-const LR_MUTED = 'rgba(10,10,10,0.55)';
+const LR_MUTED = 'rgba(10,10,10,0.68)';
 const LR_RULE = 'rgba(10,10,10,0.18)';
 
 function LabReport({ data }) {

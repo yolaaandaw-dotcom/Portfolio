@@ -2,7 +2,7 @@
 // (projects/assets/latent-goal/diagnostic-environment-design.pdf). The simulation is variants/maze-sim.jsx.
 
 const LG_INK = '#0a0a0a';
-const LG_MUTED = 'rgba(10,10,10,0.55)';
+const LG_MUTED = 'rgba(10,10,10,0.68)';
 const LG_RULE = 'rgba(10,10,10,0.14)';
 
 const LG_METHOD = [

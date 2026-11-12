@@ -1,6 +1,6 @@
 // Shared project-page component. Loaded by each projects/<id>.html.
 const PP_INK = '#0a0a0a';
-const PP_MUTED = 'rgba(10,10,10,0.55)';
+const PP_MUTED = 'rgba(10,10,10,0.68)';
 const PP_RULE = 'rgba(10,10,10,0.14)';
 
 function ProjectPage({ project, allProjects }) {
@@ -8,6 +8,7 @@ function ProjectPage({ project, allProjects }) {
   const idx = allProjects.findIndex((p) => p.id === project.id);
   const prev = allProjects[(idx - 1 + allProjects.length) % allProjects.length];
   const next = allProjects[(idx + 1) % allProjects.length];
+  const [lead, ...rest] = project.figures || [];   // the first picture goes above the text: see the thing before the mechanism
   const shownMeta = [
     ...project.meta.filter(([k]) => k !== 'tools' && k !== 'status'),
     ...(project.tags && project.tags.length ? [['keywords', project.tags.join(', ')]] : []),
@@ -33,7 +34,13 @@ function ProjectPage({ project, allProjects }) {
         {project.subtitle && (
           <p style={{ fontSize: 17, fontWeight: 300, color: PP_MUTED, lineHeight: 1.5, margin: '18px 0 0', maxWidth: '56ch' }}>{project.subtitle}</p>
         )}
-        <p style={{ fontSize: 16, lineHeight: 1.65, margin: '28px 0 0', maxWidth: '64ch' }}>{project.blurb}</p>
+        {lead && (
+          <figure style={{ margin: '36px 0 0' }}>
+            <img src={lead[0]} alt={lead[1]} style={{ display: 'block', width: '100%', height: 'auto', border: `1px solid ${PP_RULE}` }} />
+            <figcaption style={{ fontSize: 12, color: PP_MUTED, lineHeight: 1.5, marginTop: 8 }}>{lead[1]}</figcaption>
+          </figure>
+        )}
+        <p style={{ fontSize: 16, lineHeight: 1.65, margin: '36px 0 0', maxWidth: '64ch' }}>{project.blurb}</p>
 
         <dl style={{ margin: '48px 0 0', paddingTop: 20, paddingBottom: 8, borderBottom: `1px solid ${PP_RULE}`, borderTop: `1px solid ${PP_RULE}` }}>
           {shownMeta.map(([k, v]) => (
@@ -48,7 +55,7 @@ function ProjectPage({ project, allProjects }) {
           ))}
         </dl>
 
-        {project.figures && project.figures.map(([src, cap]) => (
+        {rest.map(([src, cap]) => (
           <figure key={src} style={{ margin: '56px 0 0' }}>
             <img src={src} alt={cap} style={{ display: 'block', width: '100%', height: 'auto', border: `1px solid ${PP_RULE}` }} />
             <figcaption style={{ fontSize: 10.5, color: PP_MUTED, marginTop: 10, letterSpacing: 0.4, lineHeight: 1.5 }}>{cap}</figcaption>

@@ -1,6 +1,6 @@
 // Project-specific page for fluidic (Withheld-Air), built from the ACADIA 2026 paper.
 const WA_INK = '#0a0a0a';
-const WA_MUTED = 'rgba(10,10,10,0.55)';
+const WA_MUTED = 'rgba(10,10,10,0.68)';
 const WA_RULE = 'rgba(10,10,10,0.14)';
 
 function FluidicPage({ project, allProjects }) {
@@ -60,6 +60,11 @@ function FluidicPage({ project, allProjects }) {
       <Reveal i={2} style={{ marginTop: 18 }}>
         <div style={{ fontFamily: sans, fontWeight: 300, fontSize: 17, color: WA_MUTED, letterSpacing: -0.3, maxWidth: '56ch' }}>{project.subtitle}</div>
       </Reveal>
+      <Reveal i={3} style={{ marginTop: 36 }}>
+        <Plate src="wa02-participants-w.jpg" alt="Two participants face each other across the inflated boundary" />
+        <Cap>Two people in conversation across the boundary as it fills.</Cap>
+      </Reveal>
+
       <Reveal i={3} style={{ marginTop: 28 }}>
         <p style={{ fontFamily: sans, fontWeight: 300, fontSize: 16, lineHeight: 1.65, margin: 0, maxWidth: '64ch', color: WA_INK }}>{project.blurb}</p>
       </Reveal>
@@ -75,10 +80,6 @@ function FluidicPage({ project, allProjects }) {
         </dl>
       </Reveal>
 
-      <Reveal i={5} style={{ marginTop: 72 }}>
-        <Plate src="wa01-cover-w.jpg" alt="One participant seen through an aperture in the inflated boundary" />
-        <Cap>The translucent pneumatic boundary in its inflated state.</Cap>
-      </Reveal>
 
       <Reveal i={6} style={{ marginTop: 80 }}>
         <SectionLabel>Summary</SectionLabel>
@@ -95,8 +96,8 @@ function FluidicPage({ project, allProjects }) {
         </p>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, alignItems: 'start' }}>
           <div>
-            <Plate src="wa02-participants-w.jpg" alt="Two participants seated across the boundary during a pilot session" />
-            <Cap>Two participants seated across the boundary during a pilot session.</Cap>
+            <Plate src="wa01-cover-w.jpg" alt="One participant seen through an aperture in the inflated boundary" />
+            <Cap>What the other person sees once the apertures have nearly closed.</Cap>
           </div>
           <div>
             <Plate src="wa10-layout.png" alt="Spatial layout of the partial wall" />
@@ -138,6 +139,20 @@ function FluidicPage({ project, allProjects }) {
             <Cap>Fabrication uses layered PE film welded on a Zund digital cutter. Seam paths are generated
               from the parametric Y-cell model and output as toolpaths; a soldering iron with a flat tip is
               mounted on the gantry and traces these paths directly onto the layered film.</Cap>
+          </div>
+        </div>
+      </Reveal>
+
+      <Reveal i={9} style={{ marginTop: 56 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '300px minmax(0, 1fr)', gap: 24, alignItems: 'start' }}>
+          <div>
+            <video autoPlay muted loop playsInline src={A + 'wa-field.mp4'} aria-label="The field of Y-cells filling and closing" style={{ display: 'block', width: '100%', height: 536, objectFit: 'cover', background: '#0a0a0a' }} />
+            <Cap>The field filling, looped.</Cap>
+          </div>
+          <div style={{ display: 'grid', gridTemplateRows: '256px 256px', gap: 24 }}>
+            <img src={A + 'wa11-field-open.jpg'} alt="The field at low pressure, apertures open" style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover' }} />
+            <img src={A + 'wa12-field-closed.jpg'} alt="The field at high pressure, apertures closed" style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover' }} />
+            <Cap>Low pressure, apertures open; high pressure, apertures closed.</Cap>
           </div>
         </div>
       </Reveal>

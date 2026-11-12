@@ -2,7 +2,7 @@
 // Modeled on FluidicPage: same chrome, custom diagrams.
 
 const ELP_INK = '#0a0a0a';
-const ELP_MUTED = 'rgba(10,10,10,0.55)';
+const ELP_MUTED = 'rgba(10,10,10,0.68)';
 const ELP_FAINT = 'rgba(10,10,10,0.32)';
 const ELP_RULE = 'rgba(10,10,10,0.14)';
 const ELP_BG_FAINT = '#fafafa';

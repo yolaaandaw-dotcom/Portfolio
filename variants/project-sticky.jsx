@@ -1,6 +1,6 @@
 // Project-specific page for chair (Sticky Node).
 const ST_INK = '#0a0a0a';
-const ST_MUTED = 'rgba(10,10,10,0.55)';
+const ST_MUTED = 'rgba(10,10,10,0.68)';
 const ST_RULE = 'rgba(10,10,10,0.14)';
 
 function StickyPage({ project, allProjects }) {
@@ -60,6 +60,11 @@ function StickyPage({ project, allProjects }) {
       <Reveal i={2} style={{ marginTop: 18 }}>
         <div style={{ fontFamily: sans, fontWeight: 300, fontSize: 17, color: ST_MUTED, lineHeight: 1.5, maxWidth: '56ch' }}>{project.subtitle}</div>
       </Reveal>
+      <Reveal i={3} style={{ marginTop: 36 }}>
+        <Plate src="st01-cover-crop-w.jpg" alt="A printed terracotta connector on a table" framed />
+        <Cap>A fired connector, printed to the geometry of one branch end.</Cap>
+      </Reveal>
+
       <Reveal i={3} style={{ marginTop: 28 }}>
         <p style={{ fontFamily: sans, fontWeight: 300, fontSize: 16, lineHeight: 1.65, margin: 0, maxWidth: '64ch', color: ST_INK }}>{project.blurb}</p>
       </Reveal>
@@ -75,10 +80,6 @@ function StickyPage({ project, allProjects }) {
         </dl>
       </Reveal>
 
-      <Reveal i={5} style={{ marginTop: 72 }}>
-        <Plate src="st01-cover-crop-w.jpg" alt="A printed terracotta connector on a table" framed />
-        <Cap>A fired connector, printed to the geometry of one branch end.</Cap>
-      </Reveal>
 
       <Reveal i={6} style={{ marginTop: 80 }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.3fr', gap: 48 }}>

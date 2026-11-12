@@ -1,6 +1,6 @@
 // Project-specific page for clay (Squishy Assembly).
 const SQ_INK = '#0a0a0a';
-const SQ_MUTED = 'rgba(10,10,10,0.55)';
+const SQ_MUTED = 'rgba(10,10,10,0.68)';
 const SQ_RULE = 'rgba(10,10,10,0.14)';
 
 function SquishyPage({ project, allProjects }) {
@@ -60,6 +60,11 @@ function SquishyPage({ project, allProjects }) {
       <Reveal i={2} style={{ marginTop: 18 }}>
         <div style={{ fontFamily: sans, fontWeight: 300, fontSize: 17, color: SQ_MUTED, lineHeight: 1.5, maxWidth: '56ch' }}>{project.subtitle}</div>
       </Reveal>
+      <Reveal i={3} style={{ marginTop: 36 }}>
+        <Plate src="sq08-hero.jpg" alt="The robotic arm with its paper gripper facing a hand holding a clay brick, with a pile of shaped bricks between them" bg="#0a0a0a" framed />
+        <Cap>The arm and the hand work from the same pile of clay bricks.</Cap>
+      </Reveal>
+
       <Reveal i={3} style={{ marginTop: 28 }}>
         <p style={{ fontFamily: sans, fontWeight: 300, fontSize: 16, lineHeight: 1.65, margin: 0, maxWidth: '64ch', color: SQ_INK }}>{project.blurb}</p>
       </Reveal>
@@ -75,10 +80,6 @@ function SquishyPage({ project, allProjects }) {
         </dl>
       </Reveal>
 
-      <Reveal i={5} style={{ marginTop: 72 }}>
-        <Plate src="sq08-hero.jpg" alt="The robotic arm with its paper gripper facing a hand holding a clay brick, with a pile of shaped bricks between them" bg="#0a0a0a" framed />
-        <Cap>The arm and the hand work from the same pile of clay bricks.</Cap>
-      </Reveal>
 
       <Reveal i={6} style={{ marginTop: 80 }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.3fr', gap: 48 }}>

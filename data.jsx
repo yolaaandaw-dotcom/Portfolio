@@ -4,6 +4,8 @@ const PORTFOLIO_DATA = {
   visible: (p) => !p.wip && !p.minor && !p.href,   // entries with href link out and have no page of their own
   name: 'Yao Wang',
   kanji: '王瑶',
+  identity: 'MDes Mediums candidate at Harvard GSD. Research Assistant, MaP+S, Harvard GSD (collaboration with Jennifer Lewis Lab). Visiting Student, HCI Engineering Group (Stefanie Mueller), MIT CSAIL.',
+  cv: 'Yao_Wang_CV.pdf',
   tagline:
     'Design research on computational fabrication, soft and active materials, and how people and machines make things together.',
   affiliation: 'MDes Mediums · Harvard GSD',
@@ -16,6 +18,7 @@ const PORTFOLIO_DATA = {
   projects: [
     {
       id: 'tpu',
+      lockedNote: 'Under review for CHI 2027. The write-up is available on request.',
       locked: true,
       short: '3D printing on-fabric sensing mechanisms for smart textiles',
       venue: 'CHI 2027, under review',
@@ -25,6 +28,8 @@ const PORTFOLIO_DATA = {
     },
     {
       id: 'fluidic',
+      hero: true,
+      heroThumb: 'projects/assets/withheld-air/wa02-participants-w.jpg',
       short: 'a pneumatic boundary driven by frontal alpha asymmetry',
       venue: 'ACADIA 2026',
       thumb: 'projects/assets/withheld-air/wa02-participants-w.jpg',
@@ -87,7 +92,7 @@ const PORTFOLIO_DATA = {
       note: 'Live · 2026',
       proto: true,
       href: 'https://yolaaandaw-dotcom.github.io/tape-collage/',
-      venue: 'Live in the browser · 2026',
+      venue: 'Browser toy · live · 2026',
       short: 'clear tape lifts the ink off magazine pages, and the strips pile up into a collage',
       title: 'Tape Collage',
       year: '2026',
@@ -95,7 +100,7 @@ const PORTFOLIO_DATA = {
     },
     {
       id: 'sticker-station',
-      note: 'Live · 2026',
+      note: 'Browser toy · live · 2026',
       proto: true,
       href: 'https://yolaaandaw-dotcom.github.io/sticker-station/',
       venue: 'Live in the browser · 2026',
@@ -132,6 +137,8 @@ const PORTFOLIO_DATA = {
     },
     {
       id: 'chair',
+      hero: true,
+      heroThumb: 'projects/assets/sticky/st00-hero.jpg',
       venue: 'RISD',
       short: 'discarded branches held by ceramic joints printed to the ends they grip',
       thumb: 'projects/assets/sticky/st00-cover.jpg',
@@ -187,7 +194,7 @@ const PORTFOLIO_DATA = {
       also: true,
       hri: true,
       short: 'an algorithm that picks the next maze to learn a player\'s preferences from their turns',
-      venue: 'MIT 16.460 Algorithmic HRI',
+      venue: 'Algorithm · MIT 16.460 Algorithmic HRI',
       title: 'Diagnostic Mazes',
       subtitle: 'An algorithm that picks which maze to show a player next, so that their turns at its forks say the most about their preferences.',
       year: '2025',
@@ -242,7 +249,7 @@ const PORTFOLIO_DATA = {
     },
     {
       id: 'rockite',
-      note: '2025',
+      note: 'Material study · 2025',
       minor: true,
       short: 'cast Rockite reinforced by printed PLA bones',
       title: 'PLA-Reinforced Rockite Casting',
@@ -331,7 +338,7 @@ const PORTFOLIO_DATA = {
     },
     {
       id: 'icarus',
-      note: '2025',
+      note: 'Web game · 2025',
       minor: true,
       short: 'a short text game where every choice trades altitude for time',
       title: 'Icarus: Text Webgame',
@@ -349,7 +356,7 @@ const PORTFOLIO_DATA = {
     },
     {
       id: 'elp',
-      note: 'HTGAA · 2025',
+      note: 'Material study · HTGAA · 2025',
       short: 'three protein variants that curl differently in humidity',
       venue: 'HTGAA 2025',
       wip: true,
@@ -376,7 +383,7 @@ const PORTFOLIO_DATA = {
     },
     {
       id: 'biochar',
-      note: 'Harvard GSD · 2025',
+      note: 'Material study · Harvard GSD · 2025',
       short: 'biochar tuned until it prints',
       wip: true,
       title: 'Biochar-Based Direct Ink Writing',

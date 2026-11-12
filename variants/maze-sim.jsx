@@ -2,7 +2,7 @@
 // The belief grid, the choice model and the expected-gain calculation are the ones in the paper.
 // The maze library is small, and every maze is three forks in a row along one corridor.
 const MS_INK = '#0a0a0a';
-const MS_MUTED = 'rgba(10,10,10,0.55)';
+const MS_MUTED = 'rgba(10,10,10,0.68)';
 const MS_RULE = 'rgba(10,10,10,0.14)';
 const MS_AXES = ['Explore', 'Save effort', 'Collect', 'Take risks'];
 const MS_NOUN = ['exploring', 'saving effort', 'collecting', 'taking risks'];

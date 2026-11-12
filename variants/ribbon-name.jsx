@@ -65,7 +65,8 @@ const RN_FLAT = 0.3;          // seconds a fine form takes to be pulled flat
 const RN_LAG = 2.4;           // the same for the part that settles late
 const RN_LATE = 0.45;         // seconds the late part keeps lagging after the rest is home
 const RN_DOT = '#00b7d6';     // the pull tab at the loose end
-const RN_OPEN = 700;          // ms the page shows the thread pulled out before winding the name in
+const RN_OPEN = 250;          // ms the page shows the thread pulled out before winding the name in
+const RN_NUDGE = 2600;        // ms after that, the tab slides out and back once: it can be pulled
 
 // Points along the whole line, and the arc length at which each part ends.
 function ribbonLine(parts) {
@@ -107,7 +108,7 @@ function ribbonLine(parts) {
 if (!document.getElementById('ribbon-name-kf')) {
   const s = document.createElement('style');
   s.id = 'ribbon-name-kf';
-  s.textContent = '@keyframes rnBlink{0%,100%{opacity:1}50%{opacity:.12}}';
+  s.textContent = '@keyframes rnBlink{0%,100%{opacity:1}50%{opacity:.12}}@keyframes rnNudge{0%,100%{translate:0 0}45%{translate:14px 0}}';
   document.head.appendChild(s);
 }
 
@@ -127,6 +128,7 @@ function RibbonName({ ink = '#0a0a0a' }) {
     let end = rest[n - 1].slice();  // where the loose end is held
     let stretch = 1;                // straight thread drawn per unit of line still to wind in
     let grab = [0, 0], late = null, lateFor = 0, frame = 0, last = 0, opening = 0;
+    let nudging;
     let fine = false, held = end.slice(), front0 = 0, flatFrom = null, flatT = 0;
 
     const restAt = (l) => {
@@ -255,7 +257,7 @@ function RibbonName({ ink = '#0a0a0a' }) {
       grab = [p[0] - pos[n - 1][0], p[1] - pos[n - 1][1]];
       end = pos[n - 1].slice();
       mode = 'drag'; late = null;
-      clearTimeout(opening);
+      clearTimeout(opening); clearTimeout(nudging);
       try { grip.current.setPointerCapture(e.pointerId); } catch (err) {}
       grip.current.style.cursor = 'grabbing';
       dot.current.style.animation = 'none';   // found: no need to keep blinking
@@ -296,10 +298,11 @@ function RibbonName({ ink = '#0a0a0a' }) {
       }
       mode = 'open';
       opening = setTimeout(reel, RN_OPEN);
+      nudging = setTimeout(() => { if (dot.current && mode !== 'drag' && dot.current.style.animation !== 'none') dot.current.style.animation = 'rnNudge .9s ease-in-out 1, rnBlink 1.3s ease-in-out infinite'; }, RN_OPEN + RN_NUDGE);
     }
     draw();
     return () => {
-      clearTimeout(opening);
+      clearTimeout(opening); clearTimeout(nudging);
       cancelAnimationFrame(frame);
       g.removeEventListener('pointerdown', onDown);
       g.removeEventListener('pointermove', onMove);
