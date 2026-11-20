@@ -1,5 +1,8 @@
-// Plain list index. One narrow column: who, then what.
+// Plain list index: who, then what. The main work sits in two columns side by side,
+// fabrication on the left and interactive on the right; the smaller work is one ledger below.
 // Every row keeps its plate open; hovering only underlines the title.
+// No rules between rows: space does the separating (a title sits close to its own picture and far
+// from the one above), and the Also ledger is held together by three aligned columns.
 const PL_INK = '#0a0a0a';
 const PL_MUTED = 'rgba(10,10,10,0.68)';   // secondary text: dark enough to read without effort
 const PL_RULE = 'rgba(10,10,10,0.14)';
@@ -7,14 +10,32 @@ const PL_COL = 720;
 const PL_EASE = 'cubic-bezier(.16,1,.3,1)';
 // section labels: one muted uppercase line, large enough to read as a heading
 // section labels: one small muted uppercase line, as the page always had
-const PL_LABEL = { fontSize: 10, color: PL_MUTED, textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 14 };
+const PL_LABEL = { fontSize: 10, color: PL_MUTED, textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 20 };
 function SectionLabel({ children }) { return <div style={{ ...PL_LABEL }}>{children}</div>; }
 const PL_REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // Diagnostic Mazes row draws a new maze every load (variants/maze-plate.jsx). Set to false to take it off.
-const PL_MAZE = true;
+const PL_MAZE = false;
 // The name is one continuous line with a loose end that can be pulled (variants/ribbon-name.jsx).
 const PL_RIBBON_NAME = true;
+// Fabrication and interactive side by side instead of one under the other. Set to false for the single column.
+const PL_TWO_COL = true;
+const PL_WIDE = 1120;                 // page width when the two columns sit side by side
+const PL_STACK_BELOW = 860;           // narrower than this, the columns stack
+// the interactive column, in order; Tape Collage sits here with its picture, Sticker Station is a line in Also
+const INTERACTIVE_ORDER = ['yousan', 'climbit', 'handshake', 'tape-collage'];
+// covers are cut 1436 x 332 for the old 720px column; keep that shape at any column width so nothing is cropped off the sides
+const PL_COVER = '1436 / 332';
+const PL_ROW_GAP = 44;                 // space under a pictured row, in place of a rule
+const PL_ALSO_COLS = PL_TWO_COL ? '270px minmax(0,1fr) 240px' : '190px minmax(0,1fr) auto';
+if (!document.getElementById('pl-cols-css')) {
+  const st = document.createElement('style'); st.id = 'pl-cols-css';
+  st.textContent = `.pl-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:56px;row-gap:28px;align-items:start}`
+    + `.pl-also{display:grid;grid-template-columns:${PL_ALSO_COLS};column-gap:28px;align-items:baseline;padding:8px 0}`
+    + `@media (max-width:${PL_STACK_BELOW}px){.pl-cols{grid-template-columns:minmax(0,1fr)}`
+    + `.pl-also{grid-template-columns:minmax(0,1fr);row-gap:2px;padding:11px 0}}`;
+  document.head.appendChild(st);
+}
 
 const PlainRow = React.memo(function PlainRow({ p, on, onEnter, onLeave }) {
   const Tag = p.locked ? 'div' : 'a';
@@ -25,7 +46,7 @@ const PlainRow = React.memo(function PlainRow({ p, on, onEnter, onLeave }) {
       onMouseEnter={() => onEnter(p.id)}
       onMouseLeave={onLeave}
       style={{
-        display: 'block', padding: '14px 0', borderTop: `1px solid ${PL_RULE}`,
+        display: 'block', padding: `0 0 ${PL_ROW_GAP}px`,
         textDecoration: 'none', color: PL_INK, cursor: p.locked ? 'default' : 'pointer',
         opacity: p.wip ? 0.5 : 1, transition: 'opacity .15s ease',
       }}
@@ -47,7 +68,7 @@ const PlainRow = React.memo(function PlainRow({ p, on, onEnter, onLeave }) {
       {p.thumb && (
         <span style={{ display: 'block', overflow: 'hidden', marginTop: 14, position: 'relative' }}>
           <img src={p.hero && p.heroThumb ? p.heroThumb : p.thumb} alt="" style={{
-            display: 'block', width: '100%', height: p.hero ? 'auto' : 168, objectFit: 'cover',
+            display: 'block', width: '100%', height: 'auto', aspectRatio: p.hero ? 'auto' : PL_COVER, objectFit: 'cover',
             border: `1px solid ${PL_RULE}`,
             opacity: on ? 1 : 0.88, transition: PL_REDUCED ? 'none' : 'opacity .2s ease',
           }} />
@@ -69,32 +90,29 @@ const PlainRow = React.memo(function PlainRow({ p, on, onEnter, onLeave }) {
 });
 
 // The smaller work, as one dense ledger: a title, one line, a short note on the right. No images.
-const ALSO_ORDER = ['latent-goal', 'tape-collage', 'critical-matter', 'elp', 'biochar', 'sticker-station', 'rockite', 'icarus'];
-// several small projects shown as one row: the titles link to their own pages, one line describes the set
-const ALSO_GROUPS = [
-  { id: 'critical-matter', items: ['lce', 'eeg-embroidery', 'eeg-crochet'], note: 'Critical Matter · 2024–2025',
-    short: 'three textiles from one course: embroidery that programs how a fabric deforms, and embroidery and crochet that respond to EEG' },
-];
+const ALSO_ORDER = ['latent-goal', 'tape-collage', 'elp', 'biochar', 'sticker-station', 'rockite', 'critical-matter', 'icarus'];
+// several small projects shown as one row: the titles link to their own pages, one line describes the set.
+// Empty now: the Critical Matter course work is one entry with one page (id 'critical-matter').
+const ALSO_GROUPS = [];
 const AlsoGroupRow = React.memo(function AlsoGroupRow({ g, members, hover, onEnter, onLeave }) {
   return (
-    <span style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', columnGap: 24, alignItems: 'baseline', padding: '9px 0', borderTop: `1px solid ${PL_RULE}`, color: PL_INK }}>
-      <span style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', columnGap: 10, rowGap: 1 }}>
-        <span style={{ display: 'inline-flex', flexWrap: 'wrap', columnGap: 8, rowGap: 1 }}>
-          {members.map((p, i) => (
-            <span key={p.id} style={{ display: 'inline-flex', columnGap: 8 }}>
-              <a href={`projects/${p.id}.html`} onMouseEnter={() => onEnter(p.id)} onMouseLeave={onLeave}
-                 style={{ fontSize: 15, fontWeight: 400, letterSpacing: -0.2, color: PL_INK, textDecoration: hover === p.id ? 'underline' : 'none', textUnderlineOffset: 3 }}>{p.title}</a>
-              {i < members.length - 1 && <span style={{ color: PL_MUTED }}>·</span>}
-            </span>
-          ))}
-        </span>
-        <span style={{ fontSize: 13.5, fontWeight: 300, color: PL_MUTED, lineHeight: 1.5 }}>{g.short}</span>
+    <span className="pl-also" style={{ color: PL_INK }}>
+      <span style={{ fontSize: 15, fontWeight: 400, letterSpacing: -0.2, lineHeight: 1.45 }}>
+        {members.map((p, i) => (
+          <React.Fragment key={p.id}>
+            <a href={`projects/${p.id}.html`} onMouseEnter={() => onEnter(p.id)} onMouseLeave={onLeave}
+               style={{ color: PL_INK, textDecoration: hover === p.id ? 'underline' : 'none', textUnderlineOffset: 3 }}>{p.title}</a>
+            {i < members.length - 1 && ', '}
+          </React.Fragment>
+        ))}
       </span>
-      <span style={{ fontSize: 11, color: PL_MUTED, letterSpacing: 0.6, whiteSpace: 'nowrap' }}>{g.note}</span>
+      <span style={{ fontSize: 13.5, fontWeight: 300, color: PL_MUTED, lineHeight: 1.5 }}>{g.short}</span>
+      <span style={{ fontSize: 11, color: PL_MUTED, letterSpacing: 0.6 }}>{g.note}</span>
     </span>
   );
 });
-const ALSO_PICTURED = ['latent-goal', 'tape-collage'];   // these two open the list with their picture; the rest are one line each
+// rows that open the list with their picture; the rest are one line each. Without its maze, Diagnostic Mazes is a plain line too.
+const ALSO_PICTURED = [...(PL_MAZE ? ['latent-goal'] : []), 'tape-collage'];
 function alsoNote(p) { return p.note || (p.wip ? 'In progress' : p.href ? 'Live' : p.venue || p.year || ''); }
 const AlsoRow = React.memo(function AlsoRow({ p, on, onEnter, onLeave }) {
   const href = p.href || `projects/${p.id}.html`;
@@ -105,13 +123,12 @@ const AlsoRow = React.memo(function AlsoRow({ p, on, onEnter, onLeave }) {
       {...(ext ? { target: '_blank', rel: 'noopener' } : {})}
       onMouseEnter={() => onEnter(p.id)}
       onMouseLeave={onLeave}
-      style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', columnGap: 24, alignItems: 'baseline', padding: '9px 0', borderTop: `1px solid ${PL_RULE}`, textDecoration: 'none', color: PL_INK }}
+      className="pl-also"
+      style={{ textDecoration: 'none', color: PL_INK }}
     >
-      <span style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', columnGap: 10, rowGap: 1 }}>
-        <span style={{ fontSize: 15, fontWeight: 400, letterSpacing: -0.2, textDecoration: on ? 'underline' : 'none', textUnderlineOffset: 3 }}>{p.title}</span>
-        <span style={{ fontSize: 13.5, fontWeight: 300, color: PL_MUTED, lineHeight: 1.5 }}>{p.short}</span>
-      </span>
-      <span style={{ fontSize: 11, color: PL_MUTED, letterSpacing: 0.6, whiteSpace: 'nowrap' }}>{alsoNote(p)}</span>
+      <span style={{ fontSize: 15, fontWeight: 400, letterSpacing: -0.2, lineHeight: 1.45, textDecoration: on ? 'underline' : 'none', textUnderlineOffset: 3 }}>{p.title}</span>
+      <span style={{ fontSize: 13.5, fontWeight: 300, color: PL_MUTED, lineHeight: 1.5 }}>{p.short}</span>
+      <span style={{ fontSize: 11, color: PL_MUTED, letterSpacing: 0.6 }}>{alsoNote(p)}</span>
     </a>
   );
 });
@@ -120,15 +137,18 @@ function PlainList({ data }) {
   const sans = 'Roboto, system-ui, sans-serif';
   const [hover, setHover] = React.useState(null);
   const small = (p) => p.minor || p.wip || p.href || p.also;
-  const live = data.projects.filter((p) => !small(p) && !p.proto && !p.hri);
+  const live = data.projects.filter((p) => !small(p) && !p.proto && !p.hri && !(PL_TWO_COL && INTERACTIVE_ORDER.includes(p.id)));
   const hri = data.projects.filter((p) => p.hri && !small(p));
-  const proto = data.projects.filter((p) => p.proto && !small(p));
+  const proto = PL_TWO_COL
+    ? INTERACTIVE_ORDER.map((id) => data.projects.find((p) => p.id === id)).filter((p) => p && !p.locked && !p.hide)
+    : data.projects.filter((p) => p.proto && !small(p));
+  const inCol = new Set(PL_TWO_COL ? proto.map((p) => p.id) : []);
   const wip = data.projects.filter((p) => p.wip);
   const minor = data.projects.filter((p) => p.minor);
   const rank = (p) => { const i = ALSO_ORDER.indexOf(p.id); return i < 0 ? 999 : i; };
   const grouped = new Set(ALSO_GROUPS.flatMap((g) => g.items));
   const also = [
-    ...data.projects.filter((p) => small(p) && !p.locked && !p.hide && !grouped.has(p.id)),
+    ...data.projects.filter((p) => small(p) && !p.locked && !p.hide && !grouped.has(p.id) && !inCol.has(p.id)),
     ...ALSO_GROUPS.map((g) => ({ ...g, group: true })),
   ].sort((a, b) => rank(a) - rank(b));
 
@@ -147,7 +167,8 @@ function PlainList({ data }) {
           <window.PrintLogo playKey={logoKey} height={34} text="Yao" track="rgba(10,10,10,0.1)" />
         </div>
       )}
-      <div style={{ maxWidth: PL_COL, margin: '0 auto', position: 'relative' }}>
+      <div style={{ maxWidth: PL_TWO_COL ? PL_WIDE : PL_COL, margin: '0 auto', position: 'relative' }}>
+        <div style={{ maxWidth: PL_COL }}>
         {PL_RIBBON_NAME ? (
           <h1 style={{ fontSize: 17, fontWeight: 400, letterSpacing: -0.2, margin: 0 }}>
             <window.RibbonName ink={PL_INK} />
@@ -172,37 +193,49 @@ function PlainList({ data }) {
           <a href={data.linkedin} style={{ color: PL_INK, textDecorationThickness: 1, textUnderlineOffset: 3 }}>LinkedIn</a>
         </p>
 
-        <div style={{ marginTop: 64 }}>
-          <SectionLabel>Digital fabrication</SectionLabel>
-          {rows(live)}
-          <div style={{ borderTop: `1px solid ${PL_RULE}` }} />
         </div>
 
-        {proto.length > 0 && (
-          <div style={{ marginTop: 56 }}>
-            <SectionLabel>Interactive prototypes</SectionLabel>
-            {rows(proto)}
-            <div style={{ borderTop: `1px solid ${PL_RULE}` }} />
+        {PL_TWO_COL ? (
+          <div className="pl-cols" style={{ marginTop: 64 }}>
+            <div>
+              <SectionLabel>Digital fabrication</SectionLabel>
+              {rows(live)}
+            </div>
+            <div>
+              <SectionLabel>Interactive prototypes</SectionLabel>
+              {rows(proto)}
+            </div>
           </div>
+        ) : (
+          <React.Fragment>
+            <div style={{ marginTop: 64 }}>
+              <SectionLabel>Digital fabrication</SectionLabel>
+              {rows(live)}
+            </div>
+            {proto.length > 0 && (
+              <div style={{ marginTop: 56 }}>
+                <SectionLabel>Interactive prototypes</SectionLabel>
+                {rows(proto)}
+              </div>
+            )}
+          </React.Fragment>
         )}
 
         {hri.length > 0 && (
           <div style={{ marginTop: 56 }}>
             <SectionLabel>Human-robot interaction</SectionLabel>
             {rows(hri)}
-            <div style={{ borderTop: `1px solid ${PL_RULE}` }} />
           </div>
         )}
 
         {also.length > 0 && (
-          <div style={{ marginTop: 56 }}>
+          <div style={{ marginTop: 28 }}>
             <SectionLabel>Also</SectionLabel>
             {also.map((p) => p.group
               ? <AlsoGroupRow key={p.id} g={p} members={p.items.map((id) => data.projects.find((x) => x.id === id)).filter(Boolean)} hover={hover} onEnter={enter} onLeave={leave} />
               : ALSO_PICTURED.includes(p.id)
                 ? <PlainRow key={p.id} p={p} on={hover === p.id} onEnter={enter} onLeave={leave} />
                 : <AlsoRow key={p.id} p={p} on={hover === p.id} onEnter={enter} onLeave={leave} />)}
-            <div style={{ borderTop: `1px solid ${PL_RULE}` }} />
           </div>
         )}
 
@@ -210,7 +243,6 @@ function PlainList({ data }) {
           <div style={{ marginTop: 56 }}>
             <SectionLabel>In progress</SectionLabel>
             {rows(wip)}
-            <div style={{ borderTop: `1px solid ${PL_RULE}` }} />
           </div>
         )}
 
@@ -218,7 +250,6 @@ function PlainList({ data }) {
           <div style={{ marginTop: 56 }}>
             <SectionLabel>Smaller projects</SectionLabel>
             {rows(minor)}
-            <div style={{ borderTop: `1px solid ${PL_RULE}` }} />
           </div>
         )}
 

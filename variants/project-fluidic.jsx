@@ -43,7 +43,7 @@ function FluidicPage({ project, allProjects }) {
     <div style={{ position: 'relative', minHeight: '100vh', background: '#fff', color: WA_INK, padding: '80px 32px 120px', fontFamily: sans, fontWeight: 300, maxWidth: 940, margin: '0 auto' }}>
 
       <Reveal i={0}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', fontFamily: mono, fontSize: 11, color: WA_MUTED, letterSpacing: 0.8, textTransform: 'uppercase', whiteSpace: 'nowrap', paddingBottom: 14, borderBottom: `1px solid ${WA_RULE}` }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', fontFamily: mono, fontSize: 11, color: WA_MUTED, letterSpacing: 0.8, textTransform: 'uppercase', whiteSpace: 'nowrap', paddingBottom: 14 }}>
           <a href="../index.html" style={{ justifySelf: 'start', color: WA_INK, textDecoration: 'none' }}>← Home</a>
           <span>{num} / {String(allProjects.length).padStart(2, '0')}</span>
           <span style={{ justifySelf: 'end', display: 'inline-flex', gap: 16 }}>
@@ -70,7 +70,7 @@ function FluidicPage({ project, allProjects }) {
       </Reveal>
 
       <Reveal i={4} style={{ marginTop: 48 }}>
-        <dl style={{ margin: 0, paddingTop: 20, paddingBottom: 28, borderTop: `1px solid ${WA_RULE}`, borderBottom: `1px solid ${WA_RULE}` }}>
+        <dl style={{ margin: 0, paddingTop: 20, paddingBottom: 28 }}>
           {shownMeta.map(([k, v]) => (
             <div key={k} style={{ display: 'grid', gridTemplateColumns: '92px minmax(0,1fr)', columnGap: 20, padding: '6px 0' }}>
               <dt style={{ fontFamily: mono, fontSize: 10, color: WA_MUTED, textTransform: 'uppercase', letterSpacing: 1, fontWeight: 400, lineHeight: 2 }}>{k}</dt>
@@ -115,7 +115,7 @@ function FluidicPage({ project, allProjects }) {
               ['Slit', 'Closes too literally, like a shutter.'],
               ['Y-cell', 'Produces a directional opening that seals progressively, so the field reads as withdrawing rather than simply growing.'],
             ].map(([h, body], i) => (
-              <div key={h} style={{ borderTop: `1px solid ${i === 2 ? WA_INK : WA_RULE}`, paddingTop: 14 }}>
+              <div key={h} style={{ paddingTop: 14 }}>
                 <div style={{ fontFamily: sans, fontSize: 18, fontWeight: 400, letterSpacing: -0.3, marginBottom: 10 }}>{h}</div>
                 <div style={{ fontFamily: sans, fontSize: 13, fontWeight: 300, lineHeight: 1.6, color: WA_MUTED }}>{body}</div>
               </div>
@@ -196,7 +196,7 @@ function FluidicPage({ project, allProjects }) {
             ['32–49%', 'Share of each session holding the trigger'],
             ['−2.11 … +0.29', 'Baseline range across sessions'],
           ].map(([v, l]) => (
-            <div key={v} style={{ borderTop: `1px solid ${WA_INK}`, paddingTop: 14 }}>
+            <div key={v} style={{ paddingTop: 14 }}>
               <div style={{ fontFamily: sans, fontSize: 26, fontWeight: 300, letterSpacing: -0.8, marginBottom: 8 }}>{v}</div>
               <div style={{ fontFamily: mono, fontSize: 10, color: WA_MUTED, textTransform: 'uppercase', letterSpacing: 1, lineHeight: 1.5 }}>{l}</div>
             </div>
@@ -222,7 +222,7 @@ function FluidicPage({ project, allProjects }) {
         </p>
       </Reveal>
 
-      <nav style={{ marginTop: 96, paddingTop: 24, borderTop: `1px solid ${WA_RULE}`, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+      <nav style={{ marginTop: 96, paddingTop: 24, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
         <a href={`${prev.id}.html`} style={{ textDecoration: 'none', color: WA_INK, padding: '20px 0' }}>
           <div style={{ fontFamily: mono, fontSize: 10, color: WA_MUTED, textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 8 }}>← Previous</div>
           <div style={{ fontFamily: sans, fontSize: 22, fontWeight: 300, letterSpacing: -0.4 }}>{prev.title}</div>
@@ -233,9 +233,9 @@ function FluidicPage({ project, allProjects }) {
         </a>
       </nav>
 
-      <footer style={{ marginTop: 40, paddingTop: 20, borderTop: `1px solid ${WA_RULE}`, display: 'flex', justifyContent: 'space-between', fontFamily: mono, fontSize: 10.5, color: WA_MUTED, textTransform: 'uppercase', letterSpacing: 1 }}>
+      <footer style={{ marginTop: 40, paddingTop: 20, display: 'flex', justifyContent: 'space-between', fontFamily: mono, fontSize: 10.5, color: WA_MUTED, textTransform: 'uppercase', letterSpacing: 1 }}>
         <a href="https://www.linkedin.com/in/yao-wang-gsd/" style={{ color: WA_INK, textDecoration: 'none' }}>linkedin.com/in/yao-wang-gsd</a>
-        <span>Yao Wang · 王瑶</span>
+        <span>Yao Wang 王瑶</span>
       </footer>
     </div>
   );

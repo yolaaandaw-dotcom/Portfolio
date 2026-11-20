@@ -43,7 +43,7 @@ function SquishyPage({ project, allProjects }) {
     <div style={{ position: 'relative', minHeight: '100vh', background: '#fff', color: SQ_INK, padding: '80px 32px 120px', fontFamily: sans, fontWeight: 300, maxWidth: 940, margin: '0 auto' }}>
 
       <Reveal i={0}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', fontFamily: mono, fontSize: 11, color: SQ_MUTED, letterSpacing: 0.8, textTransform: 'uppercase', whiteSpace: 'nowrap', paddingBottom: 14, borderBottom: `1px solid ${SQ_RULE}` }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', fontFamily: mono, fontSize: 11, color: SQ_MUTED, letterSpacing: 0.8, textTransform: 'uppercase', whiteSpace: 'nowrap', paddingBottom: 14 }}>
           <a href="../index.html" style={{ justifySelf: 'start', color: SQ_INK, textDecoration: 'none' }}>← Home</a>
           <span>{num} / {String(allProjects.length).padStart(2, '0')}</span>
           <span style={{ justifySelf: 'end', display: 'inline-flex', gap: 16 }}>
@@ -70,7 +70,7 @@ function SquishyPage({ project, allProjects }) {
       </Reveal>
 
       <Reveal i={4} style={{ marginTop: 48 }}>
-        <dl style={{ margin: 0, paddingTop: 20, paddingBottom: 28, borderTop: `1px solid ${SQ_RULE}`, borderBottom: `1px solid ${SQ_RULE}` }}>
+        <dl style={{ margin: 0, paddingTop: 20, paddingBottom: 28 }}>
           {shownMeta.map(([k, v]) => (
             <div key={k} style={{ display: 'grid', gridTemplateColumns: '92px minmax(0,1fr)', columnGap: 20, padding: '6px 0' }}>
               <dt style={{ fontFamily: mono, fontSize: 10, color: SQ_MUTED, textTransform: 'uppercase', letterSpacing: 1, fontWeight: 400, lineHeight: 2 }}>{k}</dt>
@@ -91,7 +91,7 @@ function SquishyPage({ project, allProjects }) {
             <SectionLabel>Process</SectionLabel>
             <ol style={{ margin: 0, paddingLeft: 0, listStyle: 'none' }}>
               {project.process.map((step, i) => (
-                <li key={i} style={{ display: 'grid', gridTemplateColumns: '44px 1fr', gap: 14, padding: '12px 0', borderTop: i === 0 ? 'none' : `1px solid ${SQ_RULE}` }}>
+                <li key={i} style={{ display: 'grid', gridTemplateColumns: '44px 1fr', gap: 14, padding: '12px 0' }}>
                   <span style={{ fontFamily: mono, fontSize: 12, color: SQ_MUTED, fontWeight: 300 }}>{String(i + 1).padStart(2, '0')}</span>
                   <span style={{ fontFamily: sans, fontSize: 14, fontWeight: 300, lineHeight: 1.6, color: SQ_INK }}>{step}</span>
                 </li>
@@ -115,7 +115,7 @@ function SquishyPage({ project, allProjects }) {
             ['Robot', 'places vertically', 'Reads the human brick, shapes a matching one and stacks it upward.'],
             ['Both', 'stay adjacent', 'Each placement touches the previous one.'],
           ].map(([h, sub, desc]) => (
-            <div key={h} style={{ borderTop: `1px solid ${SQ_INK}`, paddingTop: 14 }}>
+            <div key={h} style={{ paddingTop: 14 }}>
               <div style={{ fontFamily: mono, fontSize: 10, color: SQ_MUTED, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{sub}</div>
               <div style={{ fontFamily: sans, fontSize: 19, fontWeight: 400, letterSpacing: -0.4, marginBottom: 10 }}>{h}</div>
               <div style={{ fontFamily: sans, fontSize: 13, fontWeight: 300, lineHeight: 1.6, color: SQ_MUTED }}>{desc}</div>
@@ -151,14 +151,14 @@ function SquishyPage({ project, allProjects }) {
       </Reveal>
 
       <Reveal i={13} style={{ marginTop: 96 }}>
-        <div style={{ borderTop: `2px solid ${SQ_INK}`, paddingTop: 22, marginBottom: 28 }}>
+        <div style={{ paddingTop: 22, marginBottom: 28 }}>
           <div style={{ fontFamily: mono, fontSize: 10, color: SQ_MUTED, textTransform: 'uppercase', letterSpacing: 1.4 }}>Tests</div>
         </div>
         <Plate src="sq07-tests.jpg" alt="Three test builds: planned shape, final result, brick analysis by author, and the attribution diagram" bg="#0a0a0a" />
         <Cap>Three builds. Planned shape, finished wall, user bricks against arm bricks, and the user's ten points split between shape, robot and human.</Cap>
       </Reveal>
 
-      <nav style={{ marginTop: 96, paddingTop: 24, borderTop: `1px solid ${SQ_RULE}`, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+      <nav style={{ marginTop: 96, paddingTop: 24, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
         <a href={`${prev.id}.html`} style={{ textDecoration: 'none', color: SQ_INK, padding: '20px 0' }}>
           <div style={{ fontFamily: mono, fontSize: 10, color: SQ_MUTED, textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 8 }}>← Previous</div>
           <div style={{ fontFamily: sans, fontSize: 22, fontWeight: 300, letterSpacing: -0.4 }}>{prev.title}</div>
@@ -169,9 +169,9 @@ function SquishyPage({ project, allProjects }) {
         </a>
       </nav>
 
-      <footer style={{ marginTop: 40, paddingTop: 20, borderTop: `1px solid ${SQ_RULE}`, display: 'flex', justifyContent: 'space-between', fontFamily: mono, fontSize: 10.5, color: SQ_MUTED, textTransform: 'uppercase', letterSpacing: 1 }}>
+      <footer style={{ marginTop: 40, paddingTop: 20, display: 'flex', justifyContent: 'space-between', fontFamily: mono, fontSize: 10.5, color: SQ_MUTED, textTransform: 'uppercase', letterSpacing: 1 }}>
         <a href="https://www.linkedin.com/in/yao-wang-gsd/" style={{ color: SQ_INK, textDecoration: 'none' }}>linkedin.com/in/yao-wang-gsd</a>
-        <span>Yao Wang · 王瑶</span>
+        <span>Yao Wang 王瑶</span>
       </footer>
     </div>
   );
