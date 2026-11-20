@@ -24,6 +24,8 @@ const PL_WIDE = 1120;                 // page width when the two columns sit sid
 const PL_STACK_BELOW = 860;           // narrower than this, the columns stack
 // the interactive column, in order; Tape Collage sits here with its picture, Sticker Station is a line in Also
 const INTERACTIVE_ORDER = ['yousan', 'climbit', 'handshake', 'tape-collage'];
+// the fabrication column, in order; anything not named here follows in the order of data.jsx
+const FAB_ORDER = ['tpu', 'fluidic', 'chair', 'clay'];
 // covers are cut 1436 x 332 for the old 720px column; keep that shape at any column width so nothing is cropped off the sides
 const PL_COVER = '1436 / 332';        // small cover: a strip
 const PL_COVER_BIG = '16 / 9';        // large cover: one shape for every main project, so the two columns line up row by row
@@ -144,7 +146,9 @@ function PlainList({ data }) {
   const sans = 'Roboto, system-ui, sans-serif';
   const [hover, setHover] = React.useState(null);
   const small = (p) => p.minor || p.wip || p.href || p.also;
-  const live = data.projects.filter((p) => !small(p) && !p.proto && !p.hri && !(PL_TWO_COL && INTERACTIVE_ORDER.includes(p.id)));
+  const fabRank = (p) => { const i = FAB_ORDER.indexOf(p.id); return i < 0 ? 999 : i; };
+  const live = data.projects.filter((p) => !small(p) && !p.proto && !p.hri && !(PL_TWO_COL && INTERACTIVE_ORDER.includes(p.id)))
+    .map((p, i) => [p, i]).sort((a, b) => (fabRank(a[0]) - fabRank(b[0])) || (a[1] - b[1])).map(([p]) => p);
   const hri = data.projects.filter((p) => p.hri && !small(p));
   const proto = PL_TWO_COL
     ? INTERACTIVE_ORDER.map((id) => data.projects.find((p) => p.id === id)).filter((p) => p && !p.locked && !p.hide)
