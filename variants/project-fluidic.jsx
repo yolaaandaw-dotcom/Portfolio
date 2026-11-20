@@ -81,26 +81,28 @@ function FluidicPage({ project, allProjects }) {
       </Reveal>
 
 
-      <Reveal i={6} style={{ marginTop: 80 }}>
+      {/* Order: what it is, how it sits between two people, the cell and the field, how it is made,
+          the signal loop, the sessions, the result. Images that share a row share one shape. */}
+      <Reveal i={6} style={{ marginTop: 96 }}>
         <SectionLabel>Summary</SectionLabel>
-        <p style={{ fontFamily: sans, fontWeight: 300, fontSize: 16, lineHeight: 1.7, margin: 0, color: WA_INK, maxWidth: '66ch' }}>{project.body}</p>
+        <p style={{ fontFamily: sans, fontWeight: 300, fontSize: 16, lineHeight: 1.7, color: WA_INK, maxWidth: '72ch', margin: 0 }}>{project.body}</p>
       </Reveal>
 
       <Reveal i={7} style={{ marginTop: 96 }}>
         <SectionLabel>Installation structure</SectionLabel>
-        <p style={{ fontFamily: sans, fontWeight: 300, fontSize: 16, lineHeight: 1.7, color: WA_INK, maxWidth: '72ch', margin: '0 0 28px' }}>
+        <p style={{ fontFamily: sans, fontWeight: 300, fontSize: 16, lineHeight: 1.7, color: WA_INK, maxWidth: '72ch', margin: 0 }}>
           Two participants sit face to face across a heat-welded PE film boundary. One wears a Muse 2
           headset, the other remains unsensed. The asymmetry is deliberate. The unsensed participant read
           the closing wall as a report on the other person, and began asking about their state rather than
           continuing the conversation. The prototype is a partial wall, an 8 × 4 field sized for a dyad.
         </p>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, alignItems: 'start' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, alignItems: 'start', marginTop: 40 }}>
           <div>
-            <Plate src="wa01-cover-w.jpg" alt="One participant seen through an aperture in the inflated boundary" />
+            <img src={A + 'wa01-cover-w.jpg'} alt="One participant seen through an aperture in the inflated boundary" loading="lazy" style={{ display: 'block', width: '100%', height: 'auto', aspectRatio: '4 / 3', objectFit: 'cover' }} />
             <Cap>What the other person sees once the apertures have nearly closed.</Cap>
           </div>
           <div>
-            <Plate src="wa10-layout.png" alt="Spatial layout of the partial wall" />
+            <img src={A + 'wl10-layout.png'} alt="Spatial layout of the partial wall" loading="lazy" style={{ display: 'block', width: '100%', height: 'auto', aspectRatio: '4 / 3', objectFit: 'contain' }} />
             <Cap>Spatial layout of the partial wall, an 8 × 4 field sized for a dyad.</Cap>
           </div>
         </div>
@@ -108,75 +110,90 @@ function FluidicPage({ project, allProjects }) {
 
       <Reveal i={8} style={{ marginTop: 96 }}>
         <SectionLabel>The Y-cell field</SectionLabel>
-        <div style={{ marginBottom: 28 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 28 }}>
-            {[
-              ['Hexagonal cell', 'Expands outward under pressure.'],
-              ['Slit', 'Closes too literally, like a shutter.'],
-              ['Y-cell', 'Produces a directional opening that seals progressively, so the field reads as withdrawing rather than simply growing.'],
-            ].map(([h, body], i) => (
-              <div key={h} style={{ paddingTop: 14 }}>
-                <div style={{ fontFamily: sans, fontSize: 18, fontWeight: 400, letterSpacing: -0.3, marginBottom: 10 }}>{h}</div>
-                <div style={{ fontFamily: sans, fontSize: 13, fontWeight: 300, lineHeight: 1.6, color: WA_MUTED }}>{body}</div>
-              </div>
-            ))}
-          </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 28, marginBottom: 40 }}>
+          {[
+            ['Hexagonal cell', 'Expands outward under pressure.'],
+            ['Slit', 'Closes too literally, like a shutter.'],
+            ['Y-cell', 'Produces a directional opening that seals progressively, so the field reads as withdrawing rather than simply growing.'],
+          ].map(([h, body]) => (
+            <div key={h}>
+              <div style={{ fontFamily: sans, fontSize: 18, fontWeight: 400, letterSpacing: -0.3, marginBottom: 10 }}>{h}</div>
+              <div style={{ fontFamily: sans, fontSize: 13, fontWeight: 300, lineHeight: 1.6, color: WA_MUTED }}>{body}</div>
+            </div>
+          ))}
         </div>
-        <Plate src="wa03-ycell-geometry.png" alt="Y-cell geometry: seed unit and 8×4 tessellation" />
+        <Plate src="wl03-ycell-geometry.png" alt="Y-cell geometry: seed unit and 8×4 tessellation" />
         <Cap>Y-cell geometry: seed unit and 8 × 4 tessellation.</Cap>
-      </Reveal>
-
-      <Reveal i={8} style={{ marginTop: 56 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr', gap: 24, alignItems: 'start' }}>
+        <div style={{ marginTop: 40 }}>
+          <Plate src="wl05-chamber-states.png" alt="Chamber units in different FAA states" />
+          <Cap>Chamber units in different FAA states.</Cap>
+        </div>
+        {/* the photograph and the loop are sized to the same height */}
+        <div style={{ display: 'grid', gridTemplateColumns: '700fr 332fr', gap: 24, alignItems: 'start', marginTop: 40 }}>
           <div>
-            <Plate src="wa04-auxetic-states-w.jpg" alt="The auxetic Y-cell geometry in open and contracted states" />
+            <img src={A + 'wa04-auxetic-states-w.jpg'} alt="The auxetic Y-cell geometry in open and contracted states" loading="lazy" style={{ display: 'block', width: '100%', height: 'auto', aspectRatio: '1800 / 1518', objectFit: 'cover' }} />
             <Cap>The auxetic Y-cell geometry shown in open and contracted states. As the chambers fill,
               neighboring arms press together and the voids between them close through field-level
               contraction.</Cap>
           </div>
           <div>
-            <Plate src="wa06-fabrication.png" alt="Fabrication setup: layered PE film welded on a Zund digital cutter" />
-            <Cap>Fabrication uses layered PE film welded on a Zund digital cutter. Seam paths are generated
-              from the parametric Y-cell model and output as toolpaths; a soldering iron with a flat tip is
-              mounted on the gantry and traces these paths directly onto the layered film.</Cap>
-          </div>
-        </div>
-      </Reveal>
-
-      <Reveal i={9} style={{ marginTop: 56 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '360px minmax(0, 1fr)', gap: 24, alignItems: 'start' }}>
-          <div>
-            <video autoPlay muted loop playsInline src={A + 'wa-field.mp4'} aria-label="The field of Y-cells filling and closing" style={{ display: 'block', width: '100%', height: 644, objectFit: 'cover', background: '#0a0a0a' }} />
+            <video autoPlay muted loop playsInline src={A + 'wa-field.mp4'} aria-label="The field of Y-cells filling and closing" style={{ display: 'block', width: '100%', height: 'auto', aspectRatio: '332 / 590', objectFit: 'cover', background: '#0a0a0a' }} />
             <Cap>The field filling, looped.</Cap>
           </div>
-          <div style={{ display: 'grid', gridTemplateRows: '310px 310px', gap: 24 }}>
-            <img src={A + 'wa11-field-open.jpg'} alt="The field at low pressure, apertures open" style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover' }} />
-            <img src={A + 'wa12-field-closed.jpg'} alt="The field at high pressure, apertures closed" style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover' }} />
-            <Cap>Low pressure, apertures open; high pressure, apertures closed.</Cap>
-          </div>
         </div>
       </Reveal>
 
-      <Reveal i={9} style={{ marginTop: 56 }}>
-        <Plate src="wa05-chamber-states.png" alt="Chamber units in different FAA states" />
-        <Cap>Chamber units in different FAA states.</Cap>
+      <Reveal i={9} style={{ marginTop: 96 }}>
+        <SectionLabel>Prototype and fabrication</SectionLabel>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, alignItems: 'start' }}>
+          <div>
+            <img src={A + 'wb10-proto-forms.jpg'} alt="Four small heat-sealed cells in different geometries" loading="lazy" style={{ display: 'block', width: '100%', height: 'auto', aspectRatio: '3 / 2', objectFit: 'cover' }} />
+            <Cap>Form studies. Small cells in different geometries, to compare how each one deforms.</Cap>
+          </div>
+          <div>
+            <img src={A + 'wb11-proto-sealing.jpg'} alt="A hand sealing a small Y-cell with a soldering iron" loading="lazy" style={{ display: 'block', width: '100%', height: 'auto', aspectRatio: '3 / 2', objectFit: 'cover' }} />
+            <Cap>Sealing PE film by hand with a soldering iron.</Cap>
+          </div>
+        </div>
+        <p style={{ fontFamily: sans, fontWeight: 300, fontSize: 16, lineHeight: 1.7, color: WA_INK, maxWidth: '72ch', margin: '40px 0 0' }}>
+          Fabrication uses layered PE film welded on a Zund digital cutter. Seam paths are generated
+          from the parametric Y-cell model and output as toolpaths; a soldering iron with a flat tip is
+          mounted on the gantry and traces these paths directly onto the layered film.
+        </p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24, alignItems: 'start', marginTop: 40 }}>
+          <div>
+            <img src={A + 'wl06-fabrication.png'} alt="Fabrication setup: layered PE film welded on a Zund digital cutter" loading="lazy" style={{ display: 'block', width: '100%', height: 'auto', aspectRatio: '3 / 2', objectFit: 'contain' }} />
+            <Cap>The parametric pattern on the cutter bed.</Cap>
+          </div>
+          <div>
+            <img src={A + 'wb13-zund.jpg'} alt="The Zund tool head over film with Y shapes traced on it" loading="lazy" style={{ display: 'block', width: '100%', height: 'auto', aspectRatio: '3 / 2', objectFit: 'cover' }} />
+            <Cap>The Zund gantry tracing the Y pattern onto film.</Cap>
+          </div>
+          <div>
+            <img src={A + 'wb14-sealed.jpg'} alt="Close view of welded and inflated Y-cells" loading="lazy" style={{ display: 'block', width: '100%', height: 'auto', aspectRatio: '3 / 2', objectFit: 'cover' }} />
+            <Cap>Welded cells, inflated.</Cap>
+          </div>
+        </div>
       </Reveal>
 
       <Reveal i={10} style={{ marginTop: 96 }}>
         <SectionLabel>Signal and feedback</SectionLabel>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, alignItems: 'start' }}>
+        <Plate src="wl09-pipeline.png" alt="System pipeline from EEG acquisition through signal processing to pneumatic actuation" />
+        <Cap>A one-minute meditation set each participant's resting asymmetry; any sample below that
+          baseline switched on a Wi-Fi smart plug powering a fan.</Cap>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, alignItems: 'start', marginTop: 40 }}>
           <div>
-            <Plate src="wa07-eeg-faa.png" alt="Frontal EEG channels AF7 and AF8 and the FAA computation" />
+            <img src={A + 'wl07-eeg-faa.png'} alt="Frontal EEG channels AF7 and AF8 and the FAA computation" loading="lazy" style={{ display: 'block', width: '100%', height: 'auto', aspectRatio: '16 / 9', objectFit: 'contain' }} />
             <Cap>EEG data streamed from the Muse 2 to a host computer, where a Python script filtered the
               frontal channels AF7 and AF8 and computed FAA = ln(α<sub>R</sub>) − ln(α<sub>L</sub>).</Cap>
           </div>
           <div>
-            <Plate src="wa09-pipeline.png" alt="System pipeline from EEG acquisition through signal processing to pneumatic actuation" />
-            <Cap>A one-minute meditation set each participant's resting asymmetry; any sample below that
-              baseline switched on a Wi-Fi smart plug powering a fan.</Cap>
+            <video autoPlay muted loop playsInline poster={A + 'wb04-eeg-ui.jpg'} src={A + 'wb04-eeg-ui.mp4'} aria-label="The EEG monitor running during a session" style={{ display: 'block', width: '100%', height: 'auto', aspectRatio: '16 / 9', objectFit: 'cover', background: '#f4f4f4' }} />
+            <Cap>The monitor used in the sessions. Band power per channel on the left, FAA against the session baseline on the right.</Cap>
           </div>
         </div>
-        <p style={{ fontFamily: sans, fontWeight: 300, fontSize: 16, lineHeight: 1.7, color: WA_INK, maxWidth: '72ch', marginTop: 28, marginBottom: 0 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, alignItems: 'start', marginTop: 40 }}>
+          <p style={{ fontFamily: sans, fontWeight: 300, fontSize: 16, lineHeight: 1.7, color: WA_INK, maxWidth: '72ch', margin: 0 }}>
           The interpretation of FAA is methodologically unstable, and during live conversation a negative
           deviation can equally reflect eye movement, facial muscle activity, speech, or poor electrode
           contact. We treat FAA not as evidence of an emotional state but as a provisional signal whose
@@ -184,7 +201,12 @@ function FluidicPage({ project, allProjects }) {
           minimum duration. Crossings are frequent during live speech, while filling and passive leakage
           are slow, so chamber pressure follows accumulated time below baseline rather than any single
           crossing.
-        </p>
+          </p>
+          <div>
+            <img src={A + 'wb16-code.jpg'} alt="The Python script that computes alpha power and FAA" loading="lazy" style={{ display: 'block', width: '100%', height: 'auto', aspectRatio: '16 / 9', objectFit: 'cover', objectPosition: 'left top' }} />
+            <Cap>The script that computes alpha power on AF7 and AF8 and the asymmetry between them.</Cap>
+          </div>
+        </div>
       </Reveal>
 
       <Reveal i={11} style={{ marginTop: 96 }}>
@@ -220,6 +242,12 @@ function FluidicPage({ project, allProjects }) {
           the crossing rate, the chambers fill and leak at their own. What the wall registers is not the
           signal but the time spent below baseline.
         </p>
+      </Reveal>
+
+      <Reveal i={12} style={{ marginTop: 96 }}>
+        <SectionLabel>Outcome</SectionLabel>
+        <video controls playsInline preload="metadata" poster={A + 'wb17-final.jpg'} src={A + 'wb17-final.mp4'} aria-label="Two participants across the boundary as it fills" style={{ display: 'block', width: '100%', height: 'auto', aspectRatio: '16 / 9', background: '#0a0a0a' }} />
+        <Cap>Two people in conversation across the boundary as it fills.</Cap>
       </Reveal>
 
       <nav style={{ marginTop: 96, paddingTop: 24, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
