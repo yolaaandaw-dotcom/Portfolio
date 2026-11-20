@@ -34,13 +34,13 @@
   <script>
     (function () {
       var v = Math.floor(Date.now() / 600000);
-      ["../data.jsx", "../variants/project-page.jsx"].forEach(function (f) { document.write('<script type="text/babel" src="' + f + '?v=' + v + '"><\/script>'); });
+      ["../data.jsx", "../variants/project-page.jsx", "../variants/yousan-figures.jsx"].forEach(function (f) { document.write('<script type="text/babel" src="' + f + '?v=' + v + '"><\/script>'); });
     })();
   </script>
   <script type="text/babel">
     const p = window.PORTFOLIO_DATA.projects.find(p => p.id === 'yousan');
     ReactDOM.createRoot(document.getElementById('root')).render(
-      <ProjectPage project={p} allProjects={window.PORTFOLIO_DATA.projects.filter(x => (window.PORTFOLIO_DATA.visible(x) && !x.locked) || x.id === p.id)} />
+      <YousanPage project={p} allProjects={window.PORTFOLIO_DATA.projects.filter(x => (window.PORTFOLIO_DATA.visible(x) && !x.locked) || x.id === p.id)} />
     );
   </script>
 </body>
