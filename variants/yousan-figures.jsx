@@ -185,7 +185,47 @@
     );
   }
 
-  const LIVE = [['ys06-grip-states', GripStates], ['ys07-handle-exploded', Exploded], ['ys08-data-flow', DataFlow]];
+
+  // section through the umbrella: schematic canopy and figures around the modelled handle
+  function Section() {
+    // The umbrella is rendered from the model. The two people are outlines traced from her own photographs.
+    const SW = 420, SH = SW * 1416 / 1674, IY = 62, X2 = COLW - SW;
+    const CUT = [[0.0968, 0.2716], [0.1177, 0.2518], [0.1387, 0.233], [0.1597, 0.215], [0.1806, 0.198], [0.2016, 0.1819], [0.2226, 0.1668], [0.2435, 0.1526], [0.2645, 0.1393], [0.2855, 0.127], [0.3065, 0.1157], [0.3274, 0.1054], [0.3484, 0.096], [0.3694, 0.0876], [0.3903, 0.0803], [0.4113, 0.074], [0.4323, 0.0687], [0.4532, 0.0645], [0.4742, 0.0613], [0.4952, 0.0594], [0.5161, 0.0587], [0.5371, 0.0594], [0.5581, 0.0613], [0.579, 0.0645], [0.6, 0.0687], [0.621, 0.074], [0.6419, 0.0803], [0.6629, 0.0876], [0.6839, 0.096], [0.7048, 0.1054], [0.7258, 0.1157], [0.7468, 0.127], [0.7677, 0.1393], [0.7887, 0.1526], [0.8097, 0.1668], [0.8306, 0.1819], [0.8516, 0.198], [0.8726, 0.215], [0.8935, 0.233], [0.9145, 0.2518], [0.9355, 0.2716]];
+    const cut = (x0) => 'M' + CUT.map(([fx, fy]) => `${(x0 + fx * SW).toFixed(1)} ${(IY + fy * SH).toFixed(1)}`).join(' L');
+    const AX = 0.767, BX = 0.2367, FX = 0.2742;
+    const below = IY + SH + 8, callY = IY + 0.30 * SH;
+    const scenes = [
+      { x: 0, label: 'Present', name: 'Holding together', img: 'r-sec-both.png',
+        text: 'Two people hold the handle together. The umbrella records the rain on the canopy and a camera view of the side where one of them stands.' },
+      { x: X2, label: 'Absent', name: 'Holding alone', img: 'r-sec-alone.png',
+        text: 'Later, the person who remains holds it with both hands. The rain is heard again and a blurred field of color appears on the half of the canopy that is now empty.' },
+    ];
+    const under = (x, w, t, s) => <Tx x={x - w / 2} y={below} w={w} t={t}><span style={{ display: 'block', textAlign: 'center' }}>{s}</span></Tx>;
+    return (
+      <Frame h={below + 110} id="ys-a4" lines={(id) => (
+        <g>
+          {scenes.map((s) => <path key={s.x} d={cut(s.x)} fill="none" stroke={INK} strokeWidth="2.4" strokeLinejoin="round" strokeLinecap="round" />)}
+          <Lead id={id} d={`M${X2 + FX * SW} ${callY - 4} V${IY + 0.205 * SH}`} />
+        </g>
+      )}>
+        {scenes.map((s) => (
+          <React.Fragment key={s.x}>
+            <Tx x={s.x} y={0} t="label">{s.label}</Tx>
+            <Tx x={s.x} y={18} t="name">{s.name}</Tx>
+            <Img src={s.img} x={s.x} y={IY} w={SW} h={SH} />
+            <Tx x={s.x} y={below + 34} w={400} nowrap={false}>{s.text}</Tx>
+          </React.Fragment>
+        ))}
+        {under(BX * SW, 80, 'call', 'person B')}
+        {under(AX * SW, 80, 'call', 'person A')}
+        {under(X2 + BX * SW, 140, 'note', 'where person B stood')}
+        {under(X2 + AX * SW, 80, 'call', 'person A')}
+        <Tx x={X2 + FX * SW - 100} y={callY} w={200} t="call"><span style={{ display: 'block', textAlign: 'center' }}>Color field on the empty half</span></Tx>
+      </Frame>
+    );
+  }
+
+  const LIVE = [['ys09-section', Section], ['ys06-grip-states', GripStates], ['ys07-handle-exploded', Exploded], ['ys08-data-flow', DataFlow]];
 
   // ProjectPage draws every figure as an image. Swap the three diagrams for their live versions, without a frame.
   window.YousanPage = function YousanPage(props) {

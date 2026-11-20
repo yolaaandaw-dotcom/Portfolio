@@ -267,6 +267,7 @@ const PORTFOLIO_DATA = {
       figures: [
         ['assets/yousan/ys01-storyboard-w.jpg', 'Two people co-hold the handle and the umbrella records. Later the stored trace is projected onto the interior canopy. Memory is stored as trace, not content.'],
         ['assets/yousan/ys02-system-w.jpg', 'The three modes across a walk: ordinary use, co-holding as the capture gate, and the later solo two-hand grasp that replays the trace.'],
+        ['assets/yousan/ys09-section.png', 'Section through the umbrella. While both hold the handle it records. Held alone with both hands, the trace plays on the half that is now empty. The handle is the model and the canopy is schematic. The two figures are traced from the photographs above.'],
         ['assets/yousan/ys06-grip-states.png', 'Two copper rings on the handle read how it is held. One ring touched is ordinary use. Both rings touched by two people records. Both rings touched later by one person replays the trace, once.'],
         ['assets/yousan/ys07-handle-exploded.png', 'The 3D-printed handle, exploded. It replaces the handle of a store-bought umbrella and carries the board, the two copper tape rings and the projector.'],
         ['assets/yousan/ys05-handle-w.jpg', 'Projector lens, the exploded handle enclosure, and the printed handle in place. The two copper rings are the capacitive electrodes that read how the handle is held.'],
