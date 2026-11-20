@@ -19,7 +19,7 @@ function ProjectPage({ project, allProjects }) {
   );
 
   return (
-    <div style={{ minHeight: '100vh', background: '#fff', color: PP_INK, fontFamily: sans, fontWeight: 300, padding: '80px 32px 120px', maxWidth: 940, margin: '0 auto' }}>
+    <div style={{ minHeight: '100vh', background: '#fff', color: PP_INK, fontFamily: sans, fontWeight: 300, padding: '80px 32px 120px', maxWidth: 1120, margin: '0 auto' }}>
       <div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', fontSize: 11, color: PP_MUTED, letterSpacing: 0.8, textTransform: 'uppercase', whiteSpace: 'nowrap', paddingBottom: 14 }}>
           <a href="../index.html" style={{ justifySelf: 'start', color: PP_INK, textDecoration: 'none' }}>← Home</a>

@@ -25,39 +25,46 @@ const PL_STACK_BELOW = 860;           // narrower than this, the columns stack
 // the interactive column, in order; Tape Collage sits here with its picture, Sticker Station is a line in Also
 const INTERACTIVE_ORDER = ['yousan', 'climbit', 'handshake', 'tape-collage'];
 // covers are cut 1436 x 332 for the old 720px column; keep that shape at any column width so nothing is cropped off the sides
-const PL_COVER = '1436 / 332';
+const PL_COVER = '1436 / 332';        // small cover: a strip
+const PL_COVER_BIG = '16 / 9';        // large cover: one shape for every main project, so the two columns line up row by row
 const PL_ROW_GAP = 44;                 // space under a pictured row, in place of a rule
 const PL_ALSO_COLS = PL_TWO_COL ? '270px minmax(0,1fr) 240px' : '190px minmax(0,1fr) auto';
 if (!document.getElementById('pl-cols-css')) {
   const st = document.createElement('style'); st.id = 'pl-cols-css';
-  st.textContent = `.pl-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:56px;row-gap:28px;align-items:start}`
+  st.textContent = `.pl-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:56px;row-gap:0;align-items:start}`
     + `.pl-also{display:grid;grid-template-columns:${PL_ALSO_COLS};column-gap:28px;align-items:baseline;padding:8px 0}`
     + `@media (max-width:${PL_STACK_BELOW}px){.pl-cols{grid-template-columns:minmax(0,1fr)}`
+    + `.pl-cols>.pl-l0{order:1}.pl-cols>.pl-l{order:2}.pl-cols>.pl-r0{order:3;margin-top:28px}.pl-cols>.pl-r{order:4}.pl-cols>.pl-empty{display:none}`
     + `.pl-also{grid-template-columns:minmax(0,1fr);row-gap:2px;padding:11px 0}}`;
   document.head.appendChild(st);
 }
 
-const PlainRow = React.memo(function PlainRow({ p, on, onEnter, onLeave }) {
+const PlainRow = React.memo(function PlainRow({ p, on, onEnter, onLeave, card, stack }) {
+  const stacked = !!(card || stack);   // in the two columns: title and venue on one line, description full width under them
   const Tag = p.locked ? 'div' : 'a';
   const linkProps = p.locked ? {} : p.href ? { href: p.href, target: '_blank', rel: 'noopener' } : { href: `projects/${p.id}.html` };
   return (
     <Tag
       {...linkProps}
+      className={card || undefined}
       onMouseEnter={() => onEnter(p.id)}
       onMouseLeave={onLeave}
       style={{
-        display: 'block', padding: `0 0 ${PL_ROW_GAP}px`,
+        // in the two columns a row is two shared tracks, text then picture, so pictures start level across the columns
+        ...(card ? { display: 'grid', gridTemplateRows: 'subgrid', gridRow: 'span 2' } : { display: 'block' }),
+        padding: `0 0 ${PL_ROW_GAP}px`,
         textDecoration: 'none', color: PL_INK, cursor: p.locked ? 'default' : 'pointer',
         opacity: p.wip ? 0.5 : 1, transition: 'opacity .15s ease',
       }}
     >
-      <span style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', columnGap: 24, alignItems: 'baseline' }}>
-        <span style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', columnGap: 12, rowGap: 2 }}>
-          <span style={{ fontSize: 18, fontWeight: 400, letterSpacing: -0.3, textDecoration: on && !p.locked ? 'underline' : 'none', textUnderlineOffset: 3 }}>{p.title}</span>
-          <span style={{ fontSize: 14, fontWeight: 300, color: PL_MUTED, lineHeight: 1.5 }}>{p.short || p.blurb}</span>
-          {p.locked && p.lockedNote && <span style={{ flexBasis: '100%', fontSize: 12, fontWeight: 300, color: PL_MUTED, lineHeight: 1.5 }}>{p.lockedNote}</span>}
+      {/* in a column card: title and venue share the first line, the description runs the full width under them */}
+      <span style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', columnGap: 24, rowGap: 2, alignItems: 'baseline', alignContent: 'start' }}>
+        <span style={stacked ? { display: 'contents' } : { display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', columnGap: 12, rowGap: 2 }}>
+          <span style={{ gridColumn: 1, gridRow: 1, fontSize: 18, fontWeight: 400, letterSpacing: -0.3, textDecoration: on && !p.locked ? 'underline' : 'none', textUnderlineOffset: 3 }}>{p.title}</span>
+          <span style={{ ...(stacked ? { gridColumn: '1 / -1', gridRow: 2 } : {}), fontSize: 14, fontWeight: 300, color: PL_MUTED, lineHeight: 1.5 }}>{p.short || p.blurb}</span>
+          {p.locked && p.lockedNote && <span style={{ ...(stacked ? { gridColumn: '1 / -1', gridRow: 3 } : { flexBasis: '100%' }), fontSize: 12, fontWeight: 300, color: PL_MUTED, lineHeight: 1.5 }}>{p.lockedNote}</span>}
         </span>
-        <span style={{ fontSize: 11, color: PL_MUTED, letterSpacing: 0.6, whiteSpace: 'nowrap' }}>
+        <span style={{ gridColumn: 2, gridRow: 1, fontSize: 11, color: PL_MUTED, letterSpacing: 0.6, whiteSpace: 'nowrap' }}>
           {(p.venue || p.year || '').split(/(WINNER)/).map((seg, i) => (
             seg === 'WINNER'
               ? <span key={i} style={{ color: PL_INK, fontWeight: 400, letterSpacing: 1 }}>WINNER</span>
@@ -68,7 +75,7 @@ const PlainRow = React.memo(function PlainRow({ p, on, onEnter, onLeave }) {
       {p.thumb && (
         <span style={{ display: 'block', overflow: 'hidden', marginTop: 14, position: 'relative' }}>
           <img src={p.hero && p.heroThumb ? p.heroThumb : p.thumb} alt="" style={{
-            display: 'block', width: '100%', height: 'auto', aspectRatio: p.hero ? 'auto' : PL_COVER, objectFit: 'cover',
+            display: 'block', width: '100%', height: 'auto', aspectRatio: p.hero && p.heroThumb ? PL_COVER_BIG : PL_COVER, objectFit: 'cover',
             border: `1px solid ${PL_RULE}`,
             opacity: on ? 1 : 0.88, transition: PL_REDUCED ? 'none' : 'opacity .2s ease',
           }} />
@@ -143,6 +150,9 @@ function PlainList({ data }) {
     ? INTERACTIVE_ORDER.map((id) => data.projects.find((p) => p.id === id)).filter((p) => p && !p.locked && !p.hide)
     : data.projects.filter((p) => p.proto && !small(p));
   const inCol = new Set(PL_TWO_COL ? proto.map((p) => p.id) : []);
+  const isBig = (p) => !!(p.hero && p.heroThumb);
+  let paired = 0;
+  while (paired < Math.min(live.length, proto.length) && isBig(live[paired]) === isBig(proto[paired])) paired++;
   const wip = data.projects.filter((p) => p.wip);
   const minor = data.projects.filter((p) => p.minor);
   const rank = (p) => { const i = ALSO_ORDER.indexOf(p.id); return i < 0 ? 999 : i; };
@@ -197,14 +207,17 @@ function PlainList({ data }) {
 
         {PL_TWO_COL ? (
           <div className="pl-cols" style={{ marginTop: 64 }}>
-            <div>
-              <SectionLabel>Digital fabrication</SectionLabel>
-              {rows(live)}
-            </div>
-            <div>
-              <SectionLabel>Interactive prototypes</SectionLabel>
-              {rows(proto)}
-            </div>
+            <div className="pl-l0"><SectionLabel>Digital fabrication</SectionLabel></div>
+            <div className="pl-r0"><SectionLabel>Interactive prototypes</SectionLabel></div>
+            {/* rows are paired across the columns while both sides have the same cover size; after that each column runs on its own */}
+            {Array.from({ length: paired }).map((_, i) => (
+              <React.Fragment key={i}>
+                <PlainRow p={live[i]} on={hover === live[i].id} onEnter={enter} onLeave={leave} card="pl-l" />
+                <PlainRow p={proto[i]} on={hover === proto[i].id} onEnter={enter} onLeave={leave} card="pl-r" />
+              </React.Fragment>
+            ))}
+            <div className="pl-l">{live.slice(paired).map((p) => <PlainRow key={p.id} p={p} on={hover === p.id} onEnter={enter} onLeave={leave} stack />)}</div>
+            <div className="pl-r">{proto.slice(paired).map((p) => <PlainRow key={p.id} p={p} on={hover === p.id} onEnter={enter} onLeave={leave} stack />)}</div>
           </div>
         ) : (
           <React.Fragment>

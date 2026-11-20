@@ -35,7 +35,7 @@ function LatentGoalPage({ project, allProjects }) {
   const text = { fontSize: 16, lineHeight: 1.7, margin: 0, maxWidth: '64ch' };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#fff', color: LG_INK, fontFamily: sans, fontWeight: 300, padding: '80px 32px 120px', maxWidth: 940, margin: '0 auto' }}>
+    <div style={{ minHeight: '100vh', background: '#fff', color: LG_INK, fontFamily: sans, fontWeight: 300, padding: '80px 32px 120px', maxWidth: 1120, margin: '0 auto' }}>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', fontSize: 11, color: LG_MUTED, letterSpacing: 0.8, textTransform: 'uppercase', whiteSpace: 'nowrap', paddingBottom: 14 }}>
         <a href="../index.html" style={{ justifySelf: 'start', color: LG_INK, textDecoration: 'none' }}>← Home</a>
         <span>{String(idx + 1).padStart(2, '0')} / {String(allProjects.length).padStart(2, '0')}</span>

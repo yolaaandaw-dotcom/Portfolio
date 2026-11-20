@@ -29,7 +29,7 @@
     const ref = React.useRef(null);
     const [k, setK] = React.useState(1);
     React.useLayoutEffect(() => {
-      const fit = () => setK(Math.max(0.62, Math.min(1, ref.current.clientWidth / COLW)));
+      const fit = () => setK(Math.max(0.62, Math.min(1.3, ref.current.clientWidth / COLW)));   // grows with a wider page column, up to 1.3x
       fit();
       const ro = new ResizeObserver(fit); ro.observe(ref.current);
       return () => ro.disconnect();

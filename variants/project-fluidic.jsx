@@ -40,7 +40,7 @@ function FluidicPage({ project, allProjects }) {
   );
 
   return (
-    <div style={{ position: 'relative', minHeight: '100vh', background: '#fff', color: WA_INK, padding: '80px 32px 120px', fontFamily: sans, fontWeight: 300, maxWidth: 940, margin: '0 auto' }}>
+    <div style={{ position: 'relative', minHeight: '100vh', background: '#fff', color: WA_INK, padding: '80px 32px 120px', fontFamily: sans, fontWeight: 300, maxWidth: 1120, margin: '0 auto' }}>
 
       <Reveal i={0}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', fontFamily: mono, fontSize: 11, color: WA_MUTED, letterSpacing: 0.8, textTransform: 'uppercase', whiteSpace: 'nowrap', paddingBottom: 14 }}>
@@ -144,12 +144,12 @@ function FluidicPage({ project, allProjects }) {
       </Reveal>
 
       <Reveal i={9} style={{ marginTop: 56 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '300px minmax(0, 1fr)', gap: 24, alignItems: 'start' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '360px minmax(0, 1fr)', gap: 24, alignItems: 'start' }}>
           <div>
-            <video autoPlay muted loop playsInline src={A + 'wa-field.mp4'} aria-label="The field of Y-cells filling and closing" style={{ display: 'block', width: '100%', height: 536, objectFit: 'cover', background: '#0a0a0a' }} />
+            <video autoPlay muted loop playsInline src={A + 'wa-field.mp4'} aria-label="The field of Y-cells filling and closing" style={{ display: 'block', width: '100%', height: 644, objectFit: 'cover', background: '#0a0a0a' }} />
             <Cap>The field filling, looped.</Cap>
           </div>
-          <div style={{ display: 'grid', gridTemplateRows: '256px 256px', gap: 24 }}>
+          <div style={{ display: 'grid', gridTemplateRows: '310px 310px', gap: 24 }}>
             <img src={A + 'wa11-field-open.jpg'} alt="The field at low pressure, apertures open" style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover' }} />
             <img src={A + 'wa12-field-closed.jpg'} alt="The field at high pressure, apertures closed" style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover' }} />
             <Cap>Low pressure, apertures open; high pressure, apertures closed.</Cap>
