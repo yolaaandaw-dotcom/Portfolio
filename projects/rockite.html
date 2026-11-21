@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
-  <title>rockite · Yao Wang</title>
+  <title>Coral Chair · Yao Wang</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
   <link rel="icon" href="../favicon-64.png" sizes="64x64" type="image/png" />
   <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
   <meta name="description" content="Design research on computational fabrication, soft and active materials, and how people and machines make things together." />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="rockite · Yao Wang" />
+  <meta property="og:title" content="Coral Chair · Yao Wang" />
   <meta property="og:description" content="Design research on computational fabrication, soft and active materials, and how people and machines make things together." />
   <meta property="og:image" content="https://yolaaandaw-dotcom.github.io/Portfolio/og.jpg" />
   <meta property="og:image:width" content="1200" />
@@ -34,13 +34,13 @@
   <script>
     (function () {
       var v = Math.floor(Date.now() / 600000);
-      ["../data.jsx", "../variants/project-page.jsx"].forEach(function (f) { document.write('<script type="text/babel" src="' + f + '?v=' + v + '"><\/script>'); });
+      ["../data.jsx", "../variants/project-coral.jsx"].forEach(function (f) { document.write('<script type="text/babel" src="' + f + '?v=' + v + '"><\/script>'); });
     })();
   </script>
   <script type="text/babel">
     const p = window.PORTFOLIO_DATA.projects.find(p => p.id === 'rockite');
     ReactDOM.createRoot(document.getElementById('root')).render(
-      <ProjectPage project={p} allProjects={window.PORTFOLIO_DATA.projects.filter(x => (window.PORTFOLIO_DATA.visible(x) && !x.locked) || x.id === p.id)} />
+      <CoralPage project={p} allProjects={window.PORTFOLIO_DATA.projects.filter(x => (window.PORTFOLIO_DATA.visible(x) && !x.locked) || x.id === p.id)} />
     );
   </script>
 </body>

@@ -25,7 +25,7 @@ const PL_STACK_BELOW = 860;           // narrower than this, the columns stack
 // the interactive column, in order; Tape Collage sits here with its picture, Sticker Station is a line in Also
 const INTERACTIVE_ORDER = ['yousan', 'climbit', 'handshake', 'tape-collage'];
 // the fabrication column, in order; anything not named here follows in the order of data.jsx
-const FAB_ORDER = ['tpu', 'fluidic', 'chair', 'clay'];
+const FAB_ORDER = ['tpu', 'fluidic', 'chair', 'clay', 'rockite'];
 // covers are cut 1436 x 332 for the old 720px column; keep that shape at any column width so nothing is cropped off the sides
 const PL_COVER = '1436 / 332';        // small cover: a strip
 const PL_COVER_BIG = '16 / 9';        // large cover: one shape for every main project, so the two columns line up row by row
