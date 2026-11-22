@@ -129,6 +129,8 @@ function PlMatrix({ c, on }) {
   }, [seen, over]);
   return (
     <span ref={ref} onMouseEnter={() => setOver(true)} onMouseLeave={() => { setOver(false); setHot(-1); }} style={plPlate(c, on)}>
+      {/* the picture under the grid shows only while the pointer is on the cover, through the dimmed frames */}
+      {c.under && <img src={c.under} alt="" loading="lazy" style={{ ...PL_LAYER, opacity: over ? 0.55 : 0, transition: PL_REDUCED ? 'none' : 'opacity .6s ease' }} />}
       <span style={{ position: 'absolute', inset: 0, display: 'grid', gridTemplateColumns: `repeat(${c.cols},1fr)`, gridTemplateRows: `repeat(${c.rows},1fr)` }}>
         {c.cells.map((src, i) => (
           <span key={src} onMouseEnter={() => setHot(i)} style={{ position: 'relative', overflow: 'hidden' }}>

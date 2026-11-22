@@ -116,8 +116,8 @@ const PORTFOLIO_DATA = {
       short: 'a wall built turn by turn, each clay brick reshaped by whoever holds it next',
       hero: true,
       heroThumb: 'projects/assets/squishy/sq00-hero169.jpg',
-      // index cover: the 18 frames of the third test, lit one after another
-      cover: { kind: 'matrix', cols: 6, rows: 3, dark: true, cells: Array.from({ length: 18 }, (_, i) => 'projects/assets/covers/sq-' + String(i).padStart(2, '0') + '.jpg') },
+      // index cover: the 18 frames of the third test, lit one after another; on hover the frames dim and the arm and hand show through
+      cover: { kind: 'matrix', cols: 6, rows: 3, dark: true, under: 'projects/assets/covers/sq-under.jpg', cells: Array.from({ length: 18 }, (_, i) => 'projects/assets/covers/sq-' + String(i).padStart(2, '0') + '.jpg') },
       thumb: 'projects/assets/squishy/sq08-hero.jpg',
       title: 'Squishy Assembly',
       subtitle: 'A human and a robotic arm take turns shaping clay bricks and stacking them into one wall.',
