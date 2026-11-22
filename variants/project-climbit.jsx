@@ -57,7 +57,7 @@ function ClimbitPage({ project, allProjects }) {
         <div style={{ fontWeight: 300, fontSize: 17, color: CB_MUTED, letterSpacing: -0.3, maxWidth: '56ch' }}>{project.subtitle}</div>
       </Reveal>
       <Reveal i={3} style={{ marginTop: 36 }}>
-        <img src={A + 'cb20-cover-wide.jpg'} alt="The white build held up in one hand against an orange wall" style={{ ...media, aspectRatio: '16 / 9', objectFit: 'cover' }} />
+        <img src={A + 'cb24-cover-wide.jpg'} alt="The white build held up in one hand against an orange wall" style={{ ...media, aspectRatio: '16 / 9', objectFit: 'cover' }} />
         <Cap>The white build, with red, yellow and blue holds.</Cap>
       </Reveal>
 
