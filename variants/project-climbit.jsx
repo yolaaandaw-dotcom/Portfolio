@@ -57,17 +57,8 @@ function ClimbitPage({ project, allProjects }) {
         <div style={{ fontWeight: 300, fontSize: 17, color: CB_MUTED, letterSpacing: -0.3, maxWidth: '56ch' }}>{project.subtitle}</div>
       </Reveal>
       <Reveal i={3} style={{ marginTop: 36 }}>
-        {/* both pictures at their own proportions, nothing cropped, sized to the same height */}
-        <div style={{ display: 'grid', gridTemplateColumns: '960fr 720fr', gap: 24, alignItems: 'start' }}>
-          <div>
-            <img src={A + 'cb13-orange.jpg'} alt="The white build held up in one hand against an orange wall" style={{ ...media, aspectRatio: '960 / 1280', objectFit: 'cover' }} />
-            <Cap>The white build, with red, yellow and blue holds.</Cap>
-          </div>
-          <div>
-            <video autoPlay muted loop playsInline poster={A + 'cb12-gym.jpg'} src={A + 'cb12-gym.mp4'} aria-label="The black build turned and gripped in one hand in a climbing gym" style={{ ...media, aspectRatio: '720 / 1280', objectFit: 'cover', background: '#0a0a0a' }} />
-            <Cap>The black build in a climbing gym.</Cap>
-          </div>
-        </div>
+        <img src={A + 'cb20-cover-wide.jpg'} alt="The white build held up in one hand against an orange wall" style={{ ...media, aspectRatio: '16 / 9', objectFit: 'cover' }} />
+        <Cap>The white build, with red, yellow and blue holds.</Cap>
       </Reveal>
 
       <Reveal i={3} style={{ marginTop: 28 }}>
@@ -95,15 +86,19 @@ function ClimbitPage({ project, allProjects }) {
           in any orientation. The body is printed in PLA and the holds in TPU. Pressure sensors sit between
           the holds and read where the hand grips and how hard. A vibration motor at the centre answers.
         </P>
-        {/* two 16:9 pictures side by side, uncropped */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, alignItems: 'start', marginTop: 40 }}>
-          <div>
-            <img src={A + 'cb21-render-wide.jpg'} alt="Climbit rendered transparent, showing the body and the holds on its faces" loading="lazy" style={{ ...media, aspectRatio: '16 / 9', objectFit: 'cover' }} />
-            <Cap>The body and holds, rendered transparent.</Cap>
-          </div>
+        <div style={{ marginTop: 40 }}>
+          <img src={A + 'cb21-render-wide.jpg'} alt="Climbit rendered transparent, showing the body and the holds on its faces" loading="lazy" style={{ ...media, aspectRatio: '16 / 9', objectFit: 'cover' }} />
+          <Cap>The body and holds, rendered transparent.</Cap>
+        </div>
+        {/* a 16:9 picture and an 8:9 clip: twice the width, the same height */}
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 24, alignItems: 'start', marginTop: 40 }}>
           <div>
             <img src={A + 'cb22-hands-wide.jpg'} alt="The white build turned in two hands" loading="lazy" style={{ ...media, aspectRatio: '16 / 9', objectFit: 'cover' }} />
             <Cap>The white build turned in two hands.</Cap>
+          </div>
+          <div>
+            <video autoPlay muted loop playsInline poster={A + 'cb23-gym.jpg'} src={A + 'cb23-gym.mp4'} aria-label="The black build turned and gripped in one hand in a climbing gym" style={{ ...media, aspectRatio: '8 / 9', objectFit: 'cover', background: '#0a0a0a' }} />
+            <Cap>The black build in a climbing gym.</Cap>
           </div>
         </div>
       </Reveal>
