@@ -23,14 +23,16 @@ const PL_TWO_COL = true;
 const PL_WIDE = 1120;                 // page width when the two columns sit side by side
 const PL_STACK_BELOW = 860;           // narrower than this, the columns stack
 // the interactive column, in order; Tape Collage sits here with its picture, Sticker Station is a line in Also
-const INTERACTIVE_ORDER = ['yousan', 'climbit', 'handshake', 'tape-collage'];
+const INTERACTIVE_ORDER = ['climbit', 'yousan', 'handshake', 'tape-collage'];
 // the fabrication column, in order; anything not named here follows in the order of data.jsx
 const FAB_ORDER = ['tpu', 'fluidic', 'chair', 'clay', 'rockite'];
 // covers are cut 1436 x 332 for the old 720px column; keep that shape at any column width so nothing is cropped off the sides
 const PL_COVER = '1436 / 332';        // small cover: a strip
 const PL_COVER_BIG = '16 / 9';        // large cover: one shape for every main project, so the two columns line up row by row
 const PL_ROW_GAP = 44;                 // space under a pictured row, in place of a rule
-const PL_ALSO_COLS = PL_TWO_COL ? '270px minmax(0,1fr) 240px' : '190px minmax(0,1fr) auto';
+// the one-line description under each title. Off for now: keywords will take its place once they are written.
+const PL_SHORT = false;
+const PL_ALSO_COLS = !PL_SHORT ? (PL_TWO_COL ? '270px minmax(0,1fr)' : '190px minmax(0,1fr)') : PL_TWO_COL ? '270px minmax(0,1fr) 240px' : '190px minmax(0,1fr) auto';
 if (!document.getElementById('pl-cols-css')) {
   const st = document.createElement('style'); st.id = 'pl-cols-css';
   st.textContent = `.pl-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:56px;row-gap:0;align-items:start}`
@@ -38,6 +40,7 @@ if (!document.getElementById('pl-cols-css')) {
     + `@media (max-width:${PL_STACK_BELOW}px){.pl-cols{grid-template-columns:minmax(0,1fr)}`
     + `.pl-cols>.pl-l0{order:1}.pl-cols>.pl-l{order:2}.pl-cols>.pl-r0{order:3;margin-top:28px}.pl-cols>.pl-r{order:4}.pl-cols>.pl-empty{display:none}`
     + `.pl-also{grid-template-columns:minmax(0,1fr);row-gap:2px;padding:11px 0}}`;
+  st.textContent += `@keyframes pl-buzz{0%{opacity:0;transform:translate(0,-50%) scale(.7)}25%{opacity:1}100%{opacity:0;transform:translate(30%,-50%) scale(1.25)}}`;
   document.head.appendChild(st);
 }
 
@@ -65,6 +68,8 @@ function PlCover({ p, on }) {
   const c = p.cover;
   if (c.kind === 'pair') return <PlPair c={c} on={on} />;
   if (c.kind === 'matrix') return <PlMatrix c={c} on={on} />;
+  if (c.kind === 'holds') return <PlHolds c={c} on={on} />;
+  if (c.kind === 'tiles') return <PlTiles c={c} on={on} />;
   return <PlFade c={c} on={on} />;
 }
 function PlFade({ c, on }) {
@@ -83,6 +88,80 @@ function PlFade({ c, on }) {
       <img src={c.a} alt="" style={{ ...PL_LAYER, ...(asm ? { opacity: act ? 0 : 1, transform: act ? 'scale(.97)' : 'none', transition: T(`transform 1s ${PL_EASE}, opacity .6s ease`) } : {}) }} />
       <img src={c.b} alt="" loading="lazy" style={{ ...PL_LAYER, opacity: act ? 1 : 0,
         ...(asm ? { transform: act ? 'none' : 'scale(1.03)', transition: T(`transform 1s ${PL_EASE}, opacity .8s ease`) } : { transition: T('opacity .7s ease') }) }} />
+    </span>
+  );
+}
+// holds: a render of the device; the hold under the pointer takes its printed colour and orange waves
+// come off its edge, the vibration motor answering the grip. Hit areas come from a coarse label grid (c.holds, JSON).
+function PlHolds({ c, on }) {
+  const ref = React.useRef(null);
+  const seen = usePlInView(ref);
+  const [H, setH] = React.useState(null);
+  const [cur, setCur] = React.useState(0);
+  const [pulse, setPulse] = React.useState(0);
+  React.useEffect(() => { fetch(c.holds).then((r) => r.json()).then(setH).catch(() => {}); }, []);
+  const curRef = React.useRef(0);
+  const light = (id) => { if (id === curRef.current) return; curRef.current = id; setCur(id); if (id) setPulse((n) => n + 1); };
+  // touch: the holds take turns while the cover is on screen
+  React.useEffect(() => {
+    if (!H || !PL_TOUCH || PL_REDUCED || !seen) return;
+    let i = 0; const t = setInterval(() => { i = i % H.holds.length + 1; light(i); }, 1400); return () => clearInterval(t);
+  }, [H, seen]);
+  const move = (e) => {
+    if (!H) return; const r = ref.current.getBoundingClientRect();
+    const gx = Math.min(H.w - 1, Math.floor((e.clientX - r.left) / r.width * H.w)), gy = Math.min(H.h - 1, Math.floor((e.clientY - r.top) / r.height * H.h));
+    light(H.grid[gy][gx]);
+  };
+  const box = cur && H ? H.holds[cur - 1].box : null;
+  return (
+    <span ref={ref} onMouseMove={move} onMouseLeave={() => light(0)} style={plPlate(c, on)}>
+      <img src={c.src} alt="" style={PL_LAYER} />
+      {H && H.holds.map((h, i) => (
+        <img key={h.src} src={h.src} alt="" style={{ position: 'absolute', left: h.box[0] * 100 + '%', top: h.box[1] * 100 + '%', width: h.box[2] * 100 + '%', height: h.box[3] * 100 + '%',
+          opacity: cur === i + 1 ? 1 : 0, transition: PL_REDUCED ? 'none' : 'opacity .25s ease', pointerEvents: 'none' }} />
+      ))}
+      {box && !PL_REDUCED && (
+        <svg key={pulse} viewBox="0 0 60 60" style={{ position: 'absolute', left: (box[0] + box[2]) * 100 + '%', top: (box[1] + box[3] / 2) * 100 + '%', width: '7.5%', overflow: 'visible',
+          pointerEvents: 'none', animation: 'pl-buzz 1.1s ease-out infinite' }}>
+          {['M20 12 A22 22 0 0 1 20 48', 'M30 6 A30 30 0 0 1 30 54', 'M40 0 A38 38 0 0 1 40 60'].map((d) => <path key={d} d={d} fill="none" stroke="#ff6a2a" strokeWidth="3.2" strokeLinecap="round" />)}
+        </svg>
+      )}
+    </span>
+  );
+}
+// tiles: a video filling the cover with a column of small looping clips on its left, all playing on hover.
+// The small clips share one length and restart together. A hairline runs from a point on the video (c.lead,
+// in a 1600 x 900 frame) to one of the tiles (c.leadTile).
+function PlTiles({ c, on }) {
+  const ref = React.useRef(null);
+  const seen = usePlInView(ref);
+  const main = React.useRef(null);
+  const small = React.useRef([]);
+  const play = PL_TOUCH ? seen : on;
+  React.useEffect(() => {
+    const all = [main.current, ...small.current].filter(Boolean);
+    if (play && !PL_REDUCED) { small.current.forEach((v) => { v.currentTime = 0; }); all.forEach((v) => v.play().catch(() => {})); }
+    else all.forEach((v) => v.pause());
+  }, [play]);
+  const restart = () => small.current.forEach((v) => { v.currentTime = 0; v.play().catch(() => {}); });
+  const m = 36, g = 14, h = (900 - 2 * m - 3 * g) / 4, w = h * 16 / 9, r = 40;
+  const [lx, ly] = c.lead, ex = m + w, ey = m + c.leadTile * (h + g) + h / 2;
+  const dx = ex - lx, dy = ey - ly, L = Math.hypot(dx, dy);
+  const line = 'rgba(255,255,255,.92)';
+  return (
+    <span ref={ref} style={plPlate(c, on)}>
+      <video ref={main} src={c.video} poster={c.poster} muted loop playsInline preload="metadata" style={PL_LAYER} />
+      {c.tiles.map((t, i) => (
+        <span key={t} style={{ position: 'absolute', overflow: 'hidden', background: '#000', border: `1.5px solid ${line}`,
+          left: m / 16 + '%', top: (m + i * (h + g)) / 9 + '%', width: w / 16 + '%', height: h / 9 + '%' }}>
+          <video ref={(el) => { small.current[i] = el; }} src={t + '.mp4'} poster={t + '.jpg'} muted playsInline preload="metadata"
+            onEnded={i === 0 ? restart : undefined} style={PL_LAYER} />
+        </span>
+      ))}
+      <svg viewBox="0 0 1600 900" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
+        <circle cx={lx} cy={ly} r={r} fill="none" stroke={line} strokeWidth="2" />
+        <line x1={lx + dx / L * r} y1={ly + dy / L * r} x2={ex} y2={ey} stroke={line} strokeWidth="2" />
+      </svg>
     </span>
   );
 }
@@ -130,12 +209,14 @@ function PlMatrix({ c, on }) {
   return (
     <span ref={ref} onMouseEnter={() => setOver(true)} onMouseLeave={() => { setOver(false); setHot(-1); }} style={plPlate(c, on)}>
       {/* the picture under the grid shows only while the pointer is on the cover, through the dimmed frames */}
-      {c.under && <img src={c.under} alt="" loading="lazy" style={{ ...PL_LAYER, opacity: over ? 0.55 : 0, transition: PL_REDUCED ? 'none' : 'opacity .6s ease' }} />}
-      <span style={{ position: 'absolute', inset: 0, display: 'grid', gridTemplateColumns: `repeat(${c.cols},1fr)`, gridTemplateRows: `repeat(${c.rows},1fr)` }}>
+      {c.under && <img src={c.under} alt="" loading="lazy" style={{ ...PL_LAYER, opacity: over ? 0.7 : 0, transition: PL_REDUCED ? 'none' : 'opacity .6s ease' }} />}
+      {/* with a picture underneath, the black of the frames drops out (lighten) and only the bricks sit on it */}
+      <span style={{ position: 'absolute', inset: 0, mixBlendMode: c.under ? 'lighten' : 'normal', display: 'grid', gridTemplateColumns: `repeat(${c.cols},1fr)`, gridTemplateRows: `repeat(${c.rows},1fr)` }}>
         {c.cells.map((src, i) => (
-          <span key={src} onMouseEnter={() => setHot(i)} style={{ position: 'relative', overflow: 'hidden' }}>
-            <img src={src} alt="" loading="lazy" style={{ ...PL_LAYER, objectFit: 'contain',
-              opacity: over ? (hot === i ? 1 : 0.25) : (i > k ? 0.1 : 1), transition: PL_REDUCED ? 'none' : 'opacity .5s ease' }} />
+          // the whole cell fades together
+          <span key={src} onMouseEnter={() => setHot(i)} style={{ position: 'relative', overflow: 'hidden', background: c.under ? 'transparent' : c.dark ? '#000' : '#fff',
+            opacity: over ? (hot === i ? 1 : 0.22) : (i > k ? 0.1 : 1), transition: PL_REDUCED ? 'none' : 'opacity .5s ease' }}>
+            <img src={src} alt="" loading="lazy" style={{ ...PL_LAYER, objectFit: 'contain' }} />
           </span>
         ))}
       </span>
@@ -165,7 +246,7 @@ const PlainRow = React.memo(function PlainRow({ p, on, onEnter, onLeave, card, s
       <span style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', columnGap: 24, rowGap: 2, alignItems: 'baseline', alignContent: 'start' }}>
         <span style={stacked ? { display: 'contents' } : { display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', columnGap: 12, rowGap: 2 }}>
           <span style={{ gridColumn: 1, gridRow: 1, fontSize: 18, fontWeight: 400, letterSpacing: -0.3, textDecoration: on && !p.locked ? 'underline' : 'none', textUnderlineOffset: 3 }}>{p.title}</span>
-          <span style={{ ...(stacked ? { gridColumn: '1 / -1', gridRow: 2 } : {}), fontSize: 14, fontWeight: 300, color: PL_MUTED, lineHeight: 1.5 }}>{p.short || p.blurb}</span>
+          {PL_SHORT && <span style={{ ...(stacked ? { gridColumn: '1 / -1', gridRow: 2 } : {}), fontSize: 14, fontWeight: 300, color: PL_MUTED, lineHeight: 1.5 }}>{p.short || p.blurb}</span>}
           {p.locked && p.lockedNote && <span style={{ ...(stacked ? { gridColumn: '1 / -1', gridRow: 3 } : { flexBasis: '100%' }), fontSize: 12, fontWeight: 300, color: PL_MUTED, lineHeight: 1.5 }}>{p.lockedNote}</span>}
         </span>
         <span style={{ gridColumn: 2, gridRow: 1, fontSize: 11, color: PL_MUTED, letterSpacing: 0.6, whiteSpace: 'nowrap' }}>
@@ -218,7 +299,7 @@ const AlsoGroupRow = React.memo(function AlsoGroupRow({ g, members, hover, onEnt
           </React.Fragment>
         ))}
       </span>
-      <span style={{ fontSize: 13.5, fontWeight: 300, color: PL_MUTED, lineHeight: 1.5 }}>{g.short}</span>
+      {PL_SHORT && <span style={{ fontSize: 13.5, fontWeight: 300, color: PL_MUTED, lineHeight: 1.5 }}>{g.short}</span>}
       <span style={{ fontSize: 11, color: PL_MUTED, letterSpacing: 0.6 }}>{g.note}</span>
     </span>
   );
@@ -239,7 +320,7 @@ const AlsoRow = React.memo(function AlsoRow({ p, on, onEnter, onLeave }) {
       style={{ textDecoration: 'none', color: PL_INK }}
     >
       <span style={{ fontSize: 15, fontWeight: 400, letterSpacing: -0.2, lineHeight: 1.45, textDecoration: on ? 'underline' : 'none', textUnderlineOffset: 3 }}>{p.title}</span>
-      <span style={{ fontSize: 13.5, fontWeight: 300, color: PL_MUTED, lineHeight: 1.5 }}>{p.short}</span>
+      {PL_SHORT && <span style={{ fontSize: 13.5, fontWeight: 300, color: PL_MUTED, lineHeight: 1.5 }}>{p.short}</span>}
       <span style={{ fontSize: 11, color: PL_MUTED, letterSpacing: 0.6 }}>{alsoNote(p)}</span>
     </a>
   );

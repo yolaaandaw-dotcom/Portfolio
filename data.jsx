@@ -17,6 +17,11 @@ const PORTFOLIO_DATA = {
   projects: [
     {
       id: 'tpu',
+      hero: true,
+      heroThumb: 'projects/assets/covers/sf-glove.jpg',
+      // index cover: the glove playing, the four printed primitives beside it, a hairline from the glove to the stretch primitive it uses
+      cover: { kind: 'tiles', dark: true, video: 'projects/assets/covers/sf-glove.mp4', poster: 'projects/assets/covers/sf-glove.jpg',
+        tiles: ['slide', 'press', 'stretch', 'bend'].map((n) => 'projects/assets/covers/sf-' + n), lead: [1050, 560], leadTile: 2 },
       lockedNote: 'Under review for CHI 2027. The write-up is available on request.',
       locked: true,
       short: '3D printing on-fabric sensing mechanisms for smart textiles',
@@ -59,6 +64,10 @@ const PORTFOLIO_DATA = {
     {
       id: 'climbit',
       proto: true,
+      hero: true,
+      heroThumb: 'projects/assets/covers/cb-dark.jpg',
+      // index cover: the render on black; the hold under the pointer lights in its printed colour and sends out haptic waves
+      cover: { kind: 'holds', src: 'projects/assets/covers/cb-dark.jpg', holds: 'projects/assets/covers/cb-holds.json', dark: true },
       award: true,
       venue: 'MIT HARD MODE Hackathon, WINNER',
       short: 'a handheld dodecahedron that turns grip training into a climb, with an AI writing the events of the route from how you grip',
