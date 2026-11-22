@@ -86,11 +86,15 @@ function ClimbitPage({ project, allProjects }) {
           in any orientation. The body is printed in PLA and the holds in TPU. Pressure sensors sit between
           the holds and read where the hand grips and how hard. A vibration motor at the centre answers.
         </P>
-        {/* the render and the gym clip are sized to the same height */}
-        <div style={{ display: 'grid', gridTemplateColumns: '889fr 562fr', gap: 24, alignItems: 'start', marginTop: 40 }}>
+        <div style={{ marginTop: 40 }}>
+          <img src={A + 'cb11-render.jpg'} alt="Climbit rendered transparent, showing the body and the holds on its faces" loading="lazy" style={{ ...media, aspectRatio: '16 / 9', objectFit: 'cover' }} />
+          <Cap>The body and holds, rendered transparent.</Cap>
+        </div>
+        {/* the photograph and the gym clip are sized to the same height */}
+        <div style={{ display: 'grid', gridTemplateColumns: '960fr 720fr', gap: 24, alignItems: 'start', marginTop: 40 }}>
           <div>
-            <img src={A + 'cb11-render.jpg'} alt="Climbit rendered transparent, showing the body and the holds on its faces" loading="lazy" style={{ ...media, aspectRatio: '960 / 1080', objectFit: 'cover' }} />
-            <Cap>The body and holds, rendered transparent.</Cap>
+            <img src={A + 'cb13-orange.jpg'} alt="The white build held up in one hand against an orange wall" loading="lazy" style={{ ...media, aspectRatio: '960 / 1280', objectFit: 'cover' }} />
+            <Cap>Held against an orange wall.</Cap>
           </div>
           <div>
             <video autoPlay muted loop playsInline poster={A + 'cb12-gym.jpg'} src={A + 'cb12-gym.mp4'} aria-label="The black build turned and gripped in one hand in a climbing gym" style={{ ...media, aspectRatio: '720 / 1280', objectFit: 'cover', background: '#0a0a0a' }} />
