@@ -176,7 +176,7 @@ const PORTFOLIO_DATA = {
       short: 'a handshake read by sensing gloves and left behind as a ceramic brick',
       hero: true,
       heroThumb: 'projects/assets/oscillations/os00-hero169.jpg',
-      // index cover: the hands and the brick's toolpath drawing; on hover the drawing becomes the printed brick
+      // index cover: the gloves dimmed, the brick's toolpath drawing, and lines from four sensors to the layer heights they set; on hover the printed brick
       cover: { kind: 'fade', a: 'projects/assets/covers/os-a.jpg', b: 'projects/assets/covers/os-b.jpg', dark: true },
       thumb: 'projects/assets/oscillations/os00-cover.jpg',
       title: 'Oscillations of Connection',
