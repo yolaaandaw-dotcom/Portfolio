@@ -86,7 +86,7 @@ const PORTFOLIO_DATA = {
         ['role', 'Concept, industrial design, 3D printing, assembly'],
         ['context', 'MIT HARD MODE: Hardware x AI Hackathon, Play track'],
         ['team', 'Edward Xu, Yao Wang, Lisa Fan, Alison Mei, Peter Zhao'],
-        ['output', 'Working prototype. Bambu Labs Prize. Invited by Anthropic to its Code with Claude event in San Francisco.'],
+        ['output', 'Working prototype. Bambu Labs Prize. Selected and sponsored by Anthropic to attend Code with Claude, San Francisco.'],
         ['tools', 'Arduino, pressure sensors, vibration motor, PLA and TPU printing, Unity, Claude API'],
         ['link', 'devpost.com/software/climbit-team-4'],
       ],
