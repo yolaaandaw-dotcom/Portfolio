@@ -29,6 +29,8 @@ const PORTFOLIO_DATA = {
       id: 'fluidic',
       hero: true,
       heroThumb: 'projects/assets/withheld-air/wa02-participants-w.jpg',
+      // index cover: the two halves of the open / contracted figure; the pointer slides the seam
+      cover: { kind: 'pair', a: 'projects/assets/covers/wa-open.jpg', b: 'projects/assets/covers/wa-shut.jpg', win: 0.67 },
       short: 'a pneumatic boundary driven by frontal alpha asymmetry',
       venue: 'ACADIA 2026',
       thumb: 'projects/assets/withheld-air/wa02-participants-w.jpg',
@@ -114,6 +116,8 @@ const PORTFOLIO_DATA = {
       short: 'a wall built turn by turn, each clay brick reshaped by whoever holds it next',
       hero: true,
       heroThumb: 'projects/assets/squishy/sq00-hero169.jpg',
+      // index cover: the 18 frames of the third test, lit one after another
+      cover: { kind: 'matrix', cols: 6, rows: 3, dark: true, cells: Array.from({ length: 18 }, (_, i) => 'projects/assets/covers/sq-' + String(i).padStart(2, '0') + '.jpg') },
       thumb: 'projects/assets/squishy/sq08-hero.jpg',
       title: 'Squishy Assembly',
       subtitle: 'A human and a robotic arm take turns shaping clay bricks and stacking them into one wall.',
@@ -140,6 +144,8 @@ const PORTFOLIO_DATA = {
       id: 'chair',
       hero: true,
       heroThumb: 'projects/assets/sticky/st00-hero169.jpg',
+      // index cover: the joint in the hand, then the whole stool on hover
+      cover: { kind: 'fade', a: 'projects/assets/covers/st-hand.jpg', b: 'projects/assets/covers/st-stool.jpg' },
       venue: 'RISD',
       short: 'discarded branches held by ceramic joints printed to the ends they grip',
       thumb: 'projects/assets/sticky/st00-cover.jpg',
@@ -170,6 +176,8 @@ const PORTFOLIO_DATA = {
       short: 'a handshake read by sensing gloves and left behind as a ceramic brick',
       hero: true,
       heroThumb: 'projects/assets/oscillations/os00-hero169.jpg',
+      // index cover: the hands and the brick's toolpath drawing; on hover the drawing becomes the printed brick
+      cover: { kind: 'fade', a: 'projects/assets/covers/os-a.jpg', b: 'projects/assets/covers/os-b.jpg', dark: true },
       thumb: 'projects/assets/oscillations/os00-cover.jpg',
       title: 'Oscillations of Connection',
       subtitle: 'One handshake, read by a pair of sensing gloves, prints one ceramic brick.',
@@ -244,6 +252,8 @@ const PORTFOLIO_DATA = {
       year: '2025',
       hero: true,
       heroThumb: 'projects/assets/coral-chair/cc00-cover-pair.jpg',
+      // index cover: mold and finished stool; on hover the mold half becomes the pour
+      cover: { kind: 'fade', a: 'projects/assets/covers/cc-mold-final.jpg', b: 'projects/assets/covers/cc-cast-final.jpg' },
       thumb: 'projects/assets/coral-chair/cc00-cover-pair.jpg',
       blurb: 'We used nTop to generate a lattice structure that creates channels for pouring and molding Rockite. The mold consists of two parts: a PVA outer shell and a PLA inner core, both 3D printed together. After pouring and curing the Rockite, we used warm water to dissolve the PVA outer mold.',
       tags: ['digital fabrication', 'material study'],
@@ -257,6 +267,10 @@ const PORTFOLIO_DATA = {
     {
       id: 'yousan',
       proto: true,
+      hero: true,
+      heroThumb: 'projects/assets/covers/ys-a.jpg',
+      // index cover: exploded handle beside the section; on hover the handle closes and the canopy shows the trace
+      cover: { kind: 'assemble', a: 'projects/assets/covers/ys-a.jpg', b: 'projects/assets/covers/ys-b.jpg' },
       venue: 'Course project',
       short: 'a teleabsence umbrella that keeps the warmth of the person who shared it',
       title: 'Aiaigasa',

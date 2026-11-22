@@ -41,6 +41,106 @@ if (!document.getElementById('pl-cols-css')) {
   document.head.appendChild(st);
 }
 
+// ---- moving covers (data.jsx `cover`). Each one is a still picture until the pointer is on its row.
+// fade: one picture gives way to the next. assemble: the same, with a small scale so parts seem to close.
+// pair: two pictures side by side, the pointer slides the seam. matrix: a grid of frames lit one after another.
+// On touch screens, where nothing hovers, fade and assemble play by themselves while the cover is on screen.
+const PL_TOUCH = window.matchMedia && window.matchMedia('(hover: none)').matches;
+function usePlInView(ref) {
+  const [seen, setSeen] = React.useState(false);
+  React.useEffect(() => {
+    if (!ref.current || !('IntersectionObserver' in window)) { setSeen(true); return; }
+    const io = new IntersectionObserver(([e]) => setSeen(e.isIntersecting), { threshold: 0.3 });
+    io.observe(ref.current); return () => io.disconnect();
+  }, []);
+  return seen;
+}
+const PL_LAYER = { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block' };
+function plPlate(c, on) {
+  return { position: 'relative', display: 'block', width: '100%', aspectRatio: PL_COVER_BIG, overflow: 'hidden',
+    border: `1px solid ${PL_RULE}`, background: c.dark ? '#000' : '#fff',
+    opacity: on ? 1 : 0.88, transition: PL_REDUCED ? 'none' : 'opacity .2s ease' };
+}
+function PlCover({ p, on }) {
+  const c = p.cover;
+  if (c.kind === 'pair') return <PlPair c={c} on={on} />;
+  if (c.kind === 'matrix') return <PlMatrix c={c} on={on} />;
+  return <PlFade c={c} on={on} />;
+}
+function PlFade({ c, on }) {
+  const ref = React.useRef(null);
+  const seen = usePlInView(ref);
+  const [tick, setTick] = React.useState(false);
+  React.useEffect(() => {
+    if (!PL_TOUCH || PL_REDUCED || !seen) { setTick(false); return; }
+    const t = setInterval(() => setTick((x) => !x), 2600); return () => clearInterval(t);
+  }, [seen]);
+  const act = on || tick;
+  const T = (v) => (PL_REDUCED ? 'none' : v);
+  const asm = c.kind === 'assemble';
+  return (
+    <span ref={ref} style={plPlate(c, on)}>
+      <img src={c.a} alt="" style={{ ...PL_LAYER, ...(asm ? { opacity: act ? 0 : 1, transform: act ? 'scale(.97)' : 'none', transition: T(`transform 1s ${PL_EASE}, opacity .6s ease`) } : {}) }} />
+      <img src={c.b} alt="" loading="lazy" style={{ ...PL_LAYER, opacity: act ? 1 : 0,
+        ...(asm ? { transform: act ? 'none' : 'scale(1.03)', transition: T(`transform 1s ${PL_EASE}, opacity .8s ease`) } : { transition: T('opacity .7s ease') }) }} />
+    </span>
+  );
+}
+function PlPair({ c, on }) {
+  const ref = React.useRef(null);
+  const seen = usePlInView(ref);
+  const win = c.win || 0.67;
+  const [w, setW] = React.useState(0);
+  const [x, setX] = React.useState(0.5);
+  React.useEffect(() => {
+    const el = ref.current; if (!el) return;
+    const fit = () => setW(el.clientWidth); fit();
+    if (!('ResizeObserver' in window)) return;
+    const ro = new ResizeObserver(fit); ro.observe(el); return () => ro.disconnect();
+  }, []);
+  // touch: the seam swings slowly by itself while the cover is on screen
+  React.useEffect(() => {
+    if (!PL_TOUCH || PL_REDUCED || !seen) return;
+    let raf; const t0 = performance.now();
+    const step = (now) => { setX(0.5 + 0.5 * Math.sin((now - t0) / 1700)); raf = requestAnimationFrame(step); };
+    raf = requestAnimationFrame(step); return () => cancelAnimationFrame(raf);
+  }, [seen]);
+  const move = (e) => { const r = ref.current.getBoundingClientRect(); setX(Math.min(1, Math.max(0, (e.clientX - r.left) / r.width))); };
+  const seam = ((1 - win) + (2 * win - 1) * x) * 100;
+  const side = { position: 'absolute', top: 0, bottom: 0, overflow: 'hidden', transition: PL_REDUCED || PL_TOUCH ? 'none' : `width .35s ${PL_EASE}` };
+  const pic = { position: 'absolute', top: 0, height: '100%', width: w * win, objectFit: 'cover', objectPosition: '50% 45%', display: 'block' };
+  return (
+    <span ref={ref} onMouseMove={move} onMouseLeave={() => setX(0.5)} style={{ ...plPlate(c, on), cursor: 'ew-resize' }}>
+      <span style={{ ...side, left: 0, width: `calc(${seam}% - 1px)` }}><img src={c.a} alt="" style={{ ...pic, left: 0 }} /></span>
+      <span style={{ ...side, right: 0, width: `calc(${100 - seam}% - 1px)` }}><img src={c.b} alt="" style={{ ...pic, right: 0 }} /></span>
+    </span>
+  );
+}
+function PlMatrix({ c, on }) {
+  const ref = React.useRef(null);
+  const seen = usePlInView(ref);
+  const n = c.cells.length;
+  const [k, setK] = React.useState(n);
+  const [hot, setHot] = React.useState(-1);
+  const [over, setOver] = React.useState(false);
+  React.useEffect(() => {
+    if (PL_REDUCED || !seen || over) return;
+    const t = setInterval(() => setK((v) => (v + 1) % (n + 18)), 260); return () => clearInterval(t);
+  }, [seen, over]);
+  return (
+    <span ref={ref} onMouseEnter={() => setOver(true)} onMouseLeave={() => { setOver(false); setHot(-1); }} style={plPlate(c, on)}>
+      <span style={{ position: 'absolute', inset: 0, display: 'grid', gridTemplateColumns: `repeat(${c.cols},1fr)`, gridTemplateRows: `repeat(${c.rows},1fr)` }}>
+        {c.cells.map((src, i) => (
+          <span key={src} onMouseEnter={() => setHot(i)} style={{ position: 'relative', overflow: 'hidden' }}>
+            <img src={src} alt="" loading="lazy" style={{ ...PL_LAYER, objectFit: 'contain',
+              opacity: over ? (hot === i ? 1 : 0.25) : (i > k ? 0.1 : 1), transition: PL_REDUCED ? 'none' : 'opacity .5s ease' }} />
+          </span>
+        ))}
+      </span>
+    </span>
+  );
+}
+
 const PlainRow = React.memo(function PlainRow({ p, on, onEnter, onLeave, card, stack }) {
   const stacked = !!(card || stack);   // in the two columns: title and venue on one line, description full width under them
   const Tag = p.locked ? 'div' : 'a';
@@ -76,11 +176,12 @@ const PlainRow = React.memo(function PlainRow({ p, on, onEnter, onLeave, card, s
       </span>
       {p.thumb && (
         <span style={{ display: 'block', overflow: 'hidden', marginTop: 14, position: 'relative' }}>
+          {p.cover ? <PlCover p={p} on={on} /> : (
           <img src={p.hero && p.heroThumb ? p.heroThumb : p.thumb} alt="" style={{
             display: 'block', width: '100%', height: 'auto', aspectRatio: p.hero && p.heroThumb ? PL_COVER_BIG : PL_COVER, objectFit: 'cover',
             border: `1px solid ${PL_RULE}`,
             opacity: on ? 1 : 0.88, transition: PL_REDUCED ? 'none' : 'opacity .2s ease',
-          }} />
+          }} />)}
           {p.award && (
             <svg aria-label="winner" viewBox="0 0 24 24" width="22" height="22" style={{ position: 'absolute', top: 12, right: 12 }}>
               <path d="M6 3h12v5a6 6 0 0 1-12 0z M10.5 13.5h3V17h-3z M8 17h8v2.6H8z" fill="#ffc400" />
